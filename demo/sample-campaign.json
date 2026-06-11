@@ -1,0 +1,51 @@
+{
+  "campaign": {
+    "title": "Protocol explainer campaign",
+    "briefURI": "ipfs://brief-cid",
+    "budgetWei": "1000000000000000",
+    "platformFeeWei": "10000000000000",
+    "chainId": "SETH"
+  },
+  "roles": {
+    "sponsorCawAddress": "0x0db0aa2bed1e0710a51d44a6f87ad62e28bbfbd7",
+    "creatorAgentA": "0x1000000000000000000000000000000000001002",
+    "creatorAgentB": "0x1000000000000000000000000000000000001006",
+    "supplier": "0x1000000000000000000000000000000000001003",
+    "platform": "0x1000000000000000000000000000000000001004"
+  },
+  "proposals": [
+    {
+      "agent": "Creator Agent A",
+      "proposalURI": "ipfs://creator-agent-a-proposal",
+      "proposalHashLabel": "proposal-a",
+      "requestedPayoutWei": "700000000000000",
+      "positioning": "Beginner-friendly explainer for new community members."
+    },
+    {
+      "agent": "Creator Agent B",
+      "proposalURI": "ipfs://creator-agent-b-proposal",
+      "proposalHashLabel": "proposal-b",
+      "requestedPayoutWei": "650000000000000",
+      "positioning": "Technical explainer for active DeFi users."
+    }
+  ],
+  "selection": {
+    "winner": "Creator Agent B",
+    "rationale": "Lower payout and stronger fit for DeFi-native audience."
+  },
+  "procurement": {
+    "supplier": "Chart Pack Supplier",
+    "amountWei": "100000000000000",
+    "resourceURI": "ipfs://chart-pack-receipt"
+  },
+  "delivery": {
+    "deliveryURI": "ipfs://creator-agent-b-delivery",
+    "deliveryHashLabel": "delivery-b",
+    "assets": [
+      "60-second script",
+      "visual shot list",
+      "thumbnail copy",
+      "source notes"
+    ]
+  }
+}
