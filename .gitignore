@@ -1,0 +1,24 @@
+.DS_Store
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Foundry
+packages/contracts/cache/
+packages/contracts/out/
+broadcast/
+
+# Node
+node_modules/
+dist/
+.next/
+
+# CAW / local agent artifacts
+.cobo-agentic-wallet/
+.ace-runner-state.json
+
+
+*.xml
+*.iml
