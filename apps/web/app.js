@@ -1803,10 +1803,12 @@ function initializeFluidShaderCanvas(canvas) {
       vec2 p = uv * 2.0 - 1.0;
       p.x *= u_resolution.x / u_resolution.y;
 
-      float t = u_time * 0.34;
+      float t = u_time * mix(0.34, 0.68, u_mode);
       vec2 q = p;
       q.x += sin(p.y * 1.15 + t * 0.8) * 0.08;
       q.y += sin(p.x * 0.9 - t * 0.7) * 0.05;
+      q.x += u_mode * sin(p.y * 2.4 - u_time * 0.55) * 0.14;
+      q.y += u_mode * sin(p.x * 1.7 + u_time * 0.42) * 0.08;
 
       vec3 cream = vec3(0.965, 0.925, 0.78);
       vec3 ivory = vec3(1.0, 0.982, 0.91);
@@ -1826,10 +1828,10 @@ function initializeFluidShaderCanvas(canvas) {
       float blackWave = ridge(curve(q, -0.34, t * 0.52 - 0.9, 0.23, 0.14), 0.31, 0.23);
       float lowerGreen = ridge(curve(q, -0.84, -t * 0.66 + 2.1, 0.21, 0.09), 0.24, 0.22);
 
-      color = mix(color, mix(green, lime, smoothstep(-0.1, 0.9, q.y)), topGreen * mix(0.92, 0.72, u_mode));
-      color = mix(color, vec3(0.78, 1.0, 0.42), midGreen * mix(0.72, 0.46, u_mode));
-      color = mix(color, mix(graphite, black, 0.74), blackWave * mix(0.96, 0.58, u_mode));
-      color = mix(color, mix(moss, green, 0.5), lowerGreen * mix(0.82, 0.52, u_mode));
+      color = mix(color, mix(green, lime, smoothstep(-0.1, 0.9, q.y)), topGreen * mix(0.92, 0.82, u_mode));
+      color = mix(color, vec3(0.78, 1.0, 0.42), midGreen * mix(0.72, 0.58, u_mode));
+      color = mix(color, mix(graphite, black, 0.74), blackWave * mix(0.96, 0.68, u_mode));
+      color = mix(color, mix(moss, green, 0.5), lowerGreen * mix(0.82, 0.64, u_mode));
 
       float darkCore = ridge(curve(q + vec2(0.18, 0.0), -0.22, t * 0.42 - 0.35, 0.18, 0.08), 0.2, 0.18);
       color = mix(color, black, darkCore * mix(0.52, 0.32, u_mode));
@@ -1848,9 +1850,13 @@ function initializeFluidShaderCanvas(canvas) {
       float glow = smoothstep(0.75, 0.0, length(q - glowPoint));
       color += vec3(0.34, 0.62, 0.18) * glow * 0.18;
 
+      float flowLight = sin((q.x * 2.2 + q.y * 0.8 - u_time * 1.15) * 3.14159) * 0.5 + 0.5;
+      float flowMask = smoothstep(0.58, 0.96, flowLight) * smoothstep(1.35, 0.15, length(p * vec2(0.7, 1.0)));
+      color += vec3(0.20, 0.34, 0.08) * flowMask * u_mode * 0.18;
+
       float vignette = smoothstep(1.55, 0.18, length(p * vec2(0.88, 1.04)));
       color = mix(vec3(0.055, 0.06, 0.055), color, mix(vignette, max(vignette, 0.72), u_mode));
-      color = mix(color, mix(cream, ivory, 0.58), u_mode * 0.2);
+      color = mix(color, mix(cream, ivory, 0.58), u_mode * 0.12);
 
       gl_FragColor = vec4(color, 1.0);
     }
