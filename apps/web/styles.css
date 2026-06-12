@@ -1189,7 +1189,9 @@ button:focus-visible {
   display: grid;
   gap: 18px;
   grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.74fr) minmax(320px, 0.92fr);
-  min-height: calc(100vh - var(--nav-height));
+  height: calc(100vh - var(--nav-height));
+  min-height: 0;
+  overflow: hidden;
   padding: 18px;
   position: relative;
   z-index: 2;
@@ -1208,10 +1210,13 @@ button:focus-visible {
 }
 
 .rail {
+  overscroll-behavior: contain;
   padding: 22px;
+  overflow: auto;
 }
 
 .ledger {
+  overscroll-behavior: contain;
   padding: 22px;
   overflow: auto;
 }
@@ -1226,6 +1231,7 @@ button:focus-visible {
   border-radius: 34px;
   box-shadow: 0 34px 120px rgba(8, 13, 12, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.72);
   overflow: auto;
+  overscroll-behavior: contain;
   padding: 24px;
   position: relative;
 }
@@ -1246,6 +1252,61 @@ button:focus-visible {
 .workspace > * {
   position: relative;
   z-index: 1;
+}
+
+.rail,
+.workspace,
+.ledger,
+.chain-step-list {
+  scrollbar-color: rgba(8, 13, 12, 0.18) transparent;
+  scrollbar-width: thin;
+}
+
+.rail:hover,
+.workspace:hover,
+.ledger:hover,
+.chain-step-list:hover {
+  scrollbar-color: rgba(8, 13, 12, 0.34) transparent;
+}
+
+.rail::-webkit-scrollbar,
+.workspace::-webkit-scrollbar,
+.ledger::-webkit-scrollbar,
+.chain-step-list::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.rail::-webkit-scrollbar-track,
+.workspace::-webkit-scrollbar-track,
+.ledger::-webkit-scrollbar-track,
+.chain-step-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rail::-webkit-scrollbar-thumb,
+.workspace::-webkit-scrollbar-thumb,
+.ledger::-webkit-scrollbar-thumb,
+.chain-step-list::-webkit-scrollbar-thumb {
+  background: rgba(8, 13, 12, 0.08);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.rail:hover::-webkit-scrollbar-thumb,
+.workspace:hover::-webkit-scrollbar-thumb,
+.ledger:hover::-webkit-scrollbar-thumb,
+.chain-step-list:hover::-webkit-scrollbar-thumb {
+  background: rgba(8, 13, 12, 0.24);
+  background-clip: padding-box;
+}
+
+.rail::-webkit-scrollbar-corner,
+.workspace::-webkit-scrollbar-corner,
+.ledger::-webkit-scrollbar-corner,
+.chain-step-list::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .brand-block {
@@ -1341,7 +1402,7 @@ h3 {
 .primary-button,
 .mini-button {
   border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border-radius: 999px;
   cursor: pointer;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
 }
@@ -1444,7 +1505,7 @@ code {
 
 .topbar h2 {
   font-family: "Bodoni 72", "Didot", "Georgia", serif;
-  font-size: clamp(32px, 4.6vw, 58px);
+  font-size: clamp(32px, 4.6vw, 28px);
   letter-spacing: -0.018em;
 }
 
@@ -1463,7 +1524,12 @@ code {
 .chain-step-list {
   display: grid;
   gap: 8px;
-  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  grid-auto-columns: minmax(154px, 1fr);
+  grid-auto-flow: column;
+  grid-template-columns: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
 }
 
 .chain-step {
@@ -1473,8 +1539,8 @@ code {
   border-radius: 16px;
   display: grid;
   gap: 8px;
-  min-height: 118px;
-  min-width: 0;
+  min-height: 112px;
+  min-width: 154px;
   padding: 10px;
 }
 
@@ -1595,7 +1661,7 @@ code {
 .step-focus-copy h3 {
   color: var(--ink);
   font-family: "Bodoni 72", "Didot", "Georgia", serif;
-  font-size: clamp(46px, 6vw, 92px);
+  font-size: clamp(46px, 6vw, 42px);
   letter-spacing: -0.03em;
   line-height: 0.84;
 }
@@ -2388,8 +2454,19 @@ code {
 .ghost-button,
 .mini-button {
   backdrop-filter: blur(12px);
-  background: rgba(255, 250, 240, 0.54);
-  border-color: rgba(255, 255, 255, 0.52);
+  background:
+    linear-gradient(135deg, rgba(255, 250, 240, 0.72), rgba(245, 252, 226, 0.52)),
+    radial-gradient(circle at 16% 0%, rgba(187, 255, 102, 0.18), transparent 34%);
+  border-color: rgba(8, 13, 12, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.74), 0 8px 22px rgba(8, 13, 12, 0.08);
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.topbar-actions .ghost-button {
+  border-color: rgba(8, 13, 12, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.58), 0 10px 28px rgba(8, 13, 12, 0.12);
+  min-height: 42px;
 }
 
 .primary-button {
@@ -2471,7 +2548,7 @@ code {
   gap: 8px;
   grid-template-columns: repeat(7, minmax(120px, 1fr));
   margin-bottom: 18px;
-  /*overflow-x: auto;*/
+  overflow-x: auto;
   padding: 10px;
 }
 
@@ -2990,6 +3067,7 @@ pre {
     border-left: 0;
     border-top: 1px solid var(--line);
     grid-column: 1 / -1;
+    min-height: 220px;
   }
 }
 
@@ -3113,6 +3191,18 @@ pre {
     grid-template-columns: 1fr;
   }
 
+  .app-shell {
+    height: calc(100vh - var(--nav-height));
+    overflow: auto;
+  }
+
+  .rail,
+  .workspace,
+  .ledger {
+    max-height: none;
+    min-height: min-content;
+  }
+
   .rail,
   .workspace,
   .ledger {
@@ -3130,7 +3220,9 @@ pre {
   }
 
   .chain-step-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-columns: minmax(154px, 1fr);
+    grid-auto-flow: column;
+    grid-template-columns: none;
   }
 
   .topbar-actions {
