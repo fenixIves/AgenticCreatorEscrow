@@ -247,7 +247,7 @@ const el = {
   deliveryUri: document.querySelector("#deliveryUri"),
   escrowBalance: document.querySelector("#escrowBalance"),
   eventList: document.querySelector("#eventList"),
-  fluidCanvas: document.querySelector("#fluidShaderCanvas"),
+  fluidCanvases: Array.from(document.querySelectorAll(".fluid-shader-canvas")),
   homeDetails: document.querySelector("#homeDetails"),
   homeView: document.querySelector("#homeView"),
   jobStatus: document.querySelector("#jobStatus"),
@@ -289,6 +289,8 @@ const carousel = {
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const AUTO_SYNC_ATTEMPTS = 10;
 const AUTO_SYNC_INTERVAL_MS = 3000;
+const fluidShaderResizers = [];
+const initializedFluidCanvases = new WeakSet();
 
 function formatEth(value) {
   return `${value.toFixed(5).replace(/0+$/, "").replace(/\.$/, "")} SETH`;
@@ -1737,12 +1739,25 @@ function createGlShader(gl, type, source) {
 }
 
 function initializeFluidShader() {
-  const canvas = el.fluidCanvas;
+  const canvases = el.fluidCanvases || [];
+  if (canvases.length === 0) {
+    return;
+  }
+
+  canvases.forEach((canvas) => initializeFluidShaderCanvas(canvas));
+}
+
+function initializeFluidShaderCanvas(canvas) {
   if (!canvas) {
     return;
   }
 
-  const heroSection = canvas.closest(".hero-section");
+  const scene = canvas.closest(".hero-section, .workbench-view");
+  if (initializedFluidCanvases.has(canvas) || scene?.hidden) {
+    return;
+  }
+
+  const shaderMode = canvas.dataset.shaderMode === "workbench" ? 1 : 0;
   const gl = canvas.getContext("webgl", {
     alpha: false,
     antialias: false,
@@ -1751,7 +1766,7 @@ function initializeFluidShader() {
   });
 
   if (!gl) {
-    heroSection?.classList.add("is-shader-fallback");
+    scene?.classList.add("is-shader-fallback");
     return;
   }
 
@@ -1768,6 +1783,7 @@ function initializeFluidShader() {
 
     uniform vec2 u_resolution;
     uniform float u_time;
+    uniform float u_mode;
 
     float ridge(float value, float width, float softness) {
       return 1.0 - smoothstep(width, width + softness, abs(value));
@@ -1799,6 +1815,9 @@ function initializeFluidShader() {
       vec3 moss = vec3(0.29, 0.45, 0.16);
       vec3 black = vec3(0.025, 0.033, 0.033);
       vec3 graphite = vec3(0.13, 0.16, 0.16);
+      black = mix(black, vec3(0.13, 0.16, 0.14), u_mode * 0.68);
+      graphite = mix(graphite, vec3(0.25, 0.30, 0.25), u_mode * 0.55);
+      green = mix(green, vec3(0.72, 0.94, 0.34), u_mode * 0.35);
 
       vec3 color = mix(cream, ivory, smoothstep(-1.0, 1.0, p.y) * 0.36);
 
@@ -1807,13 +1826,13 @@ function initializeFluidShader() {
       float blackWave = ridge(curve(q, -0.34, t * 0.52 - 0.9, 0.23, 0.14), 0.31, 0.23);
       float lowerGreen = ridge(curve(q, -0.84, -t * 0.66 + 2.1, 0.21, 0.09), 0.24, 0.22);
 
-      color = mix(color, mix(green, lime, smoothstep(-0.1, 0.9, q.y)), topGreen * 0.92);
-      color = mix(color, vec3(0.78, 1.0, 0.42), midGreen * 0.72);
-      color = mix(color, mix(graphite, black, 0.74), blackWave * 0.96);
-      color = mix(color, mix(moss, green, 0.5), lowerGreen * 0.82);
+      color = mix(color, mix(green, lime, smoothstep(-0.1, 0.9, q.y)), topGreen * mix(0.92, 0.72, u_mode));
+      color = mix(color, vec3(0.78, 1.0, 0.42), midGreen * mix(0.72, 0.46, u_mode));
+      color = mix(color, mix(graphite, black, 0.74), blackWave * mix(0.96, 0.58, u_mode));
+      color = mix(color, mix(moss, green, 0.5), lowerGreen * mix(0.82, 0.52, u_mode));
 
       float darkCore = ridge(curve(q + vec2(0.18, 0.0), -0.22, t * 0.42 - 0.35, 0.18, 0.08), 0.2, 0.18);
-      color = mix(color, black, darkCore * 0.52);
+      color = mix(color, black, darkCore * mix(0.52, 0.32, u_mode));
 
       float specA = ridge(curve(q, 0.42, t * 0.8 + 0.2, 0.2, 0.08), 0.015, 0.08);
       float specB = ridge(curve(q, -0.58, -t * 0.62 + 1.5, 0.24, 0.1), 0.018, 0.08);
@@ -1823,14 +1842,15 @@ function initializeFluidShader() {
         ridge(curve(q, 0.51, t * 0.8 + 0.2, 0.2, 0.08), 0.035, 0.15) +
         ridge(curve(q, -0.04, -t * 0.74 + 1.2, 0.18, 0.1), 0.035, 0.15) +
         ridge(curve(q, -0.62, t * 0.52 - 0.9, 0.23, 0.14), 0.045, 0.16);
-      color = mix(color, black, clamp(contactShadow * 0.12, 0.0, 0.22));
+      color = mix(color, black, clamp(contactShadow * mix(0.12, 0.07, u_mode), 0.0, 0.22));
 
       vec2 glowPoint = vec2(0.55 + sin(t * 0.7) * 0.15, -0.04 + cos(t * 0.5) * 0.12);
       float glow = smoothstep(0.75, 0.0, length(q - glowPoint));
       color += vec3(0.34, 0.62, 0.18) * glow * 0.18;
 
       float vignette = smoothstep(1.55, 0.18, length(p * vec2(0.88, 1.04)));
-      color = mix(vec3(0.055, 0.06, 0.055), color, vignette);
+      color = mix(vec3(0.055, 0.06, 0.055), color, mix(vignette, max(vignette, 0.72), u_mode));
+      color = mix(color, mix(cream, ivory, 0.58), u_mode * 0.2);
 
       gl_FragColor = vec4(color, 1.0);
     }
@@ -1851,6 +1871,7 @@ function initializeFluidShader() {
     const positionLocation = gl.getAttribLocation(program, "a_position");
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
     const timeLocation = gl.getUniformLocation(program, "u_time");
+    const modeLocation = gl.getUniformLocation(program, "u_mode");
     const positionBuffer = gl.createBuffer();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -1876,11 +1897,13 @@ function initializeFluidShader() {
       }
     };
 
+    fluidShaderResizers.push(resize);
     const renderFrame = (now = 0) => {
       resize();
       gl.useProgram(program);
       gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
       gl.uniform1f(timeLocation, now * 0.001);
+      gl.uniform1f(modeLocation, shaderMode);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
       if (!prefersReducedMotion.matches) {
@@ -1889,10 +1912,11 @@ function initializeFluidShader() {
     };
 
     window.addEventListener("resize", resize, { passive: true });
+    initializedFluidCanvases.add(canvas);
     renderFrame(0);
   } catch (error) {
     console.warn("Fluid shader disabled:", error.message);
-    heroSection?.classList.add("is-shader-fallback");
+    scene?.classList.add("is-shader-fallback");
   }
 }
 
@@ -1964,6 +1988,7 @@ function setView(view, shouldUpdateHash = true) {
   const isWorkbench = view === "workbench";
   el.homeView.hidden = isWorkbench;
   el.workbenchView.hidden = !isWorkbench;
+  initializeFluidShader();
 
   document.querySelectorAll(".nav-link").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.view === (isWorkbench ? "workbench" : "home"));
@@ -1973,6 +1998,9 @@ function setView(view, shouldUpdateHash = true) {
     history.replaceState(null, "", isWorkbench ? "#workbench" : "#overview");
   }
 
+  window.requestAnimationFrame(() => {
+    fluidShaderResizers.forEach((resize) => resize());
+  });
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 

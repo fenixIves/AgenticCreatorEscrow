@@ -265,6 +265,14 @@
     </main>
 
     <section class="workbench-view" id="workbenchView" hidden>
+      <canvas
+        class="fluid-shader-canvas workbench-fluid-canvas"
+        id="workbenchShaderCanvas"
+        data-shader-mode="workbench"
+        aria-hidden="true"
+      ></canvas>
+      <div class="fluid-shader-fallback workbench-shader-fallback" aria-hidden="true"></div>
+      <div class="workbench-grid" aria-hidden="true"></div>
       <div class="app-shell">
         <aside class="rail" aria-label="Campaign roles">
           <div class="brand-block">
