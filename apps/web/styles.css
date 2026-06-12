@@ -315,14 +315,14 @@ button:focus-visible {
 .hero-copy {
   animation: heroReveal 900ms cubic-bezier(0.18, 0.82, 0.22, 1) both;
   color: #fffaf0;
-  max-width: min(960px, 78vw);
+  max-width: 100%;
   position: relative;
   z-index: 3;
 }
 
 .hero-copy h1 {
   font-family: "Bodoni 72", "Didot", "Georgia", serif;
-  font-size: clamp(72px, 11.4vw, 172px);
+  font-size: clamp(72px, 11.4vw, 142px);
   font-weight: 900;
   letter-spacing: -0.055em;
   line-height: 0.78;
