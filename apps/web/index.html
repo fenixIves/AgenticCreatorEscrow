@@ -23,79 +23,39 @@
 
     <main class="home-view" id="homeView">
       <section class="hero-section" aria-labelledby="heroTitle">
-        <div class="hero-scene" aria-hidden="true">
-          <div class="scene-aura aura-a"></div>
-          <div class="scene-aura aura-b"></div>
-          <div class="scene-aura aura-c"></div>
-          <div class="signal-field"></div>
-          <div class="orbit-ring ring-a"></div>
-          <div class="orbit-ring ring-b"></div>
-          <div class="flow-line line-a"></div>
-          <div class="flow-line line-b"></div>
-          <div class="flow-line line-c"></div>
-          <div class="flow-line line-d"></div>
-          <div class="scene-node sponsor-node">
-            <span class="node-icon"></span>
-            <small>DAO</small>
-            <strong>Campaign Budget</strong>
-          </div>
-          <div class="scene-node caw-node">
-            <span class="node-icon"></span>
-            <small>CAW</small>
-            <strong>Pact-Gated Wallet</strong>
-          </div>
-          <div class="scene-node creator-node">
-            <span class="node-icon"></span>
-            <small>Agents</small>
-            <strong>Bid + Produce</strong>
-          </div>
-          <div class="scene-node supplier-node">
-            <span class="node-icon"></span>
-            <small>Supplier</small>
-            <strong>Resource Purchase</strong>
-          </div>
-          <div class="scene-node delivery-node">
-            <span class="node-icon"></span>
-            <small>IPFS</small>
-            <strong>Verifiable Delivery</strong>
-          </div>
-          <div class="scene-node payout-node">
-            <span class="node-icon"></span>
-            <small>Settlement</small>
-            <strong>Creator Paid</strong>
-          </div>
-        </div>
+        <canvas class="fluid-shader-canvas" id="fluidShaderCanvas" aria-hidden="true"></canvas>
+        <div class="fluid-shader-fallback" aria-hidden="true"></div>
+        <div class="hero-grain" aria-hidden="true"></div>
 
         <div class="hero-copy">
-          <p class="eyebrow">Cobo Agentic Wallet Hackathon MVP</p>
-          <h1 id="heroTitle">Let AI agents commission, procure, deliver, and settle creator work.</h1>
+          <p class="eyebrow">ACE / Agentic Commerce</p>
+          <h1 id="heroTitle">Creator work, settled by agents.</h1>
           <p class="hero-lede">
-            Agentic Creator Escrow turns DAO and Web3 project content campaigns into a CAW-controlled
-            work agreement: budget is escrowed, creator agents compete, resources can be purchased
-            autonomously, and final payout happens only after verifiable delivery.
+            A CAW-gated escrow where AI agents can brief creators, buy resources, verify delivery,
+            and release funds without leaving the pact boundary.
           </p>
           <div class="hero-actions">
-            <button class="primary-button jumbo-button" type="button" data-view="workbench">Open live workbench</button>
-            <button class="ghost-button jumbo-button" type="button" data-view="home-details">See why it matters</button>
+            <button class="primary-button jumbo-button" type="button" data-view="workbench">Enter workbench</button>
+            <button class="ghost-button jumbo-button" type="button" data-view="home-details">View story</button>
           </div>
           <div class="hero-signal-board" aria-label="Live product signals">
             <div>
-              <span>Pact scope</span>
-              <strong>JobEscrow calls only</strong>
+              <span>Scope</span>
+              <strong>JobEscrow only</strong>
             </div>
             <div>
-              <span>Agent budget</span>
+              <span>Spend cap</span>
               <strong>0.001 SETH capped</strong>
             </div>
             <div>
-              <span>Economic trail</span>
-              <strong>proposal -> receipt -> payout</strong>
+              <span>Proof trail</span>
+              <strong>tx hash + delivery hash</strong>
             </div>
           </div>
           <div class="proof-strip" aria-label="Demo proof points">
-            <span>CAW wallet as sponsor treasury</span>
-            <span>Native SETH escrow flow</span>
-            <span>Proposal, procurement, delivery, payout</span>
+            <span>CAW sponsor treasury</span>
+            <span>Pact-scoped spending</span>
+            <span>On-chain settlement</span>
           </div>
         </div>
       </section>

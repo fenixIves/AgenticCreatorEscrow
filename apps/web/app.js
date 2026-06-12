@@ -247,6 +247,7 @@ const el = {
   deliveryUri: document.querySelector("#deliveryUri"),
   escrowBalance: document.querySelector("#escrowBalance"),
   eventList: document.querySelector("#eventList"),
+  fluidCanvas: document.querySelector("#fluidShaderCanvas"),
   homeDetails: document.querySelector("#homeDetails"),
   homeView: document.querySelector("#homeView"),
   jobStatus: document.querySelector("#jobStatus"),
@@ -1721,6 +1722,180 @@ function resetCarouselTimer() {
   startCarousel();
 }
 
+function createGlShader(gl, type, source) {
+  const shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    const message = gl.getShaderInfoLog(shader) || "Unknown shader compile error";
+    gl.deleteShader(shader);
+    throw new Error(message);
+  }
+
+  return shader;
+}
+
+function initializeFluidShader() {
+  const canvas = el.fluidCanvas;
+  if (!canvas) {
+    return;
+  }
+
+  const heroSection = canvas.closest(".hero-section");
+  const gl = canvas.getContext("webgl", {
+    alpha: false,
+    antialias: false,
+    depth: false,
+    powerPreference: "high-performance"
+  });
+
+  if (!gl) {
+    heroSection?.classList.add("is-shader-fallback");
+    return;
+  }
+
+  const vertexSource = `
+    attribute vec2 a_position;
+
+    void main() {
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }
+  `;
+
+  const fragmentSource = `
+    precision highp float;
+
+    uniform vec2 u_resolution;
+    uniform float u_time;
+
+    float ridge(float value, float width, float softness) {
+      return 1.0 - smoothstep(width, width + softness, abs(value));
+    }
+
+    float curve(vec2 p, float offset, float phase, float ampA, float ampB) {
+      float y =
+        offset +
+        sin(p.x * 1.34 + phase) * ampA +
+        sin(p.x * 2.36 - phase * 0.72) * ampB +
+        sin(p.x * 0.62 + phase * 1.35) * 0.10;
+      return p.y - y;
+    }
+
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+      vec2 p = uv * 2.0 - 1.0;
+      p.x *= u_resolution.x / u_resolution.y;
+
+      float t = u_time * 0.34;
+      vec2 q = p;
+      q.x += sin(p.y * 1.15 + t * 0.8) * 0.08;
+      q.y += sin(p.x * 0.9 - t * 0.7) * 0.05;
+
+      vec3 cream = vec3(0.965, 0.925, 0.78);
+      vec3 ivory = vec3(1.0, 0.982, 0.91);
+      vec3 green = vec3(0.62, 0.92, 0.24);
+      vec3 lime = vec3(0.78, 1.0, 0.39);
+      vec3 moss = vec3(0.29, 0.45, 0.16);
+      vec3 black = vec3(0.025, 0.033, 0.033);
+      vec3 graphite = vec3(0.13, 0.16, 0.16);
+
+      vec3 color = mix(cream, ivory, smoothstep(-1.0, 1.0, p.y) * 0.36);
+
+      float topGreen = ridge(curve(q, 0.76, t * 0.9 + 0.4, 0.22, 0.075), 0.22, 0.20);
+      float midGreen = ridge(curve(q, 0.18, -t * 0.74 + 1.2, 0.18, 0.10), 0.18, 0.18);
+      float blackWave = ridge(curve(q, -0.34, t * 0.52 - 0.9, 0.23, 0.14), 0.31, 0.23);
+      float lowerGreen = ridge(curve(q, -0.84, -t * 0.66 + 2.1, 0.21, 0.09), 0.24, 0.22);
+
+      color = mix(color, mix(green, lime, smoothstep(-0.1, 0.9, q.y)), topGreen * 0.92);
+      color = mix(color, vec3(0.78, 1.0, 0.42), midGreen * 0.72);
+      color = mix(color, mix(graphite, black, 0.74), blackWave * 0.96);
+      color = mix(color, mix(moss, green, 0.5), lowerGreen * 0.82);
+
+      float darkCore = ridge(curve(q + vec2(0.18, 0.0), -0.22, t * 0.42 - 0.35, 0.18, 0.08), 0.2, 0.18);
+      color = mix(color, black, darkCore * 0.52);
+
+      float specA = ridge(curve(q, 0.42, t * 0.8 + 0.2, 0.2, 0.08), 0.015, 0.08);
+      float specB = ridge(curve(q, -0.58, -t * 0.62 + 1.5, 0.24, 0.1), 0.018, 0.08);
+      color += vec3(0.22, 0.28, 0.18) * (specA + specB) * 0.5;
+
+      float contactShadow =
+        ridge(curve(q, 0.51, t * 0.8 + 0.2, 0.2, 0.08), 0.035, 0.15) +
+        ridge(curve(q, -0.04, -t * 0.74 + 1.2, 0.18, 0.1), 0.035, 0.15) +
+        ridge(curve(q, -0.62, t * 0.52 - 0.9, 0.23, 0.14), 0.045, 0.16);
+      color = mix(color, black, clamp(contactShadow * 0.12, 0.0, 0.22));
+
+      vec2 glowPoint = vec2(0.55 + sin(t * 0.7) * 0.15, -0.04 + cos(t * 0.5) * 0.12);
+      float glow = smoothstep(0.75, 0.0, length(q - glowPoint));
+      color += vec3(0.34, 0.62, 0.18) * glow * 0.18;
+
+      float vignette = smoothstep(1.55, 0.18, length(p * vec2(0.88, 1.04)));
+      color = mix(vec3(0.055, 0.06, 0.055), color, vignette);
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  try {
+    const vertexShader = createGlShader(gl, gl.VERTEX_SHADER, vertexSource);
+    const fragmentShader = createGlShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      throw new Error(gl.getProgramInfoLog(program) || "Unknown shader link error");
+    }
+
+    const positionLocation = gl.getAttribLocation(program, "a_position");
+    const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+    const timeLocation = gl.getUniformLocation(program, "u_time");
+    const positionBuffer = gl.createBuffer();
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+    gl.useProgram(program);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(1, Math.floor(rect.width * dpr));
+      const height = Math.max(1, Math.floor(rect.height * dpr));
+
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+    };
+
+    const renderFrame = (now = 0) => {
+      resize();
+      gl.useProgram(program);
+      gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+      gl.uniform1f(timeLocation, now * 0.001);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+      if (!prefersReducedMotion.matches) {
+        window.requestAnimationFrame(renderFrame);
+      }
+    };
+
+    window.addEventListener("resize", resize, { passive: true });
+    renderFrame(0);
+  } catch (error) {
+    console.warn("Fluid shader disabled:", error.message);
+    heroSection?.classList.add("is-shader-fallback");
+  }
+}
+
 function initializeCarousel() {
   if (carousel.slides.length === 0) {
     return;
@@ -1805,6 +1980,10 @@ document.querySelectorAll("[data-view]").forEach((button) => {
   button.addEventListener("click", () => {
     setView(button.dataset.view);
   });
+});
+
+window.addEventListener("hashchange", () => {
+  setView(window.location.hash === "#workbench" ? "workbench" : "home", false);
 });
 
 el.roleButtons.forEach((button) => {
@@ -1896,6 +2075,7 @@ document.querySelectorAll("[data-copy]").forEach((button) => {
 });
 
 render();
+initializeFluidShader();
 initializeCarousel();
 initializeRevealAnimations();
 setView(window.location.hash === "#workbench" ? "workbench" : "home", false);
