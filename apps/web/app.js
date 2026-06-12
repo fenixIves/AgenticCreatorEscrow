@@ -1,5 +1,16 @@
 const campaign = {
   title: "Protocol explainer campaign",
+  brief: {
+    dao: "NebulaDAO Growth Team",
+    taskType: "Protocol explainer script",
+    taskOptions: ["Protocol explainer script", "Governance proposal draft", "Launch thread + video script", "Tokenomics research memo"],
+    objective: "Turn a new restaking vault launch into a clear 60-second explainer for retail DeFi users.",
+    audience: "ETH option traders and DeFi-curious community members",
+    tone: "Clear, visual, slightly skeptical, no hype language",
+    deliverables: ["60-second script", "shot list", "thumbnail copy", "source notes"],
+    deadline: "24 hours",
+    reviewRule: "Accuracy 40%, clarity 30%, visual potential 20%, cost 10%"
+  },
   budget: 0.001,
   platformFee: 0.00001,
   sponsor: "0x0db0aa2bed1e0710a51d44a6f87ad62e28bbfbd7",
@@ -14,7 +25,16 @@ const campaign = {
       payout: 0.0007,
       uri: "ipfs://creator-agent-a-proposal",
       tone: "Beginner-friendly explainer for new community members.",
-      hash: "0x3b7d...a91f"
+      hash: "0x3b7d...a91f",
+      score: 82,
+      proof: "draft://creator-a-nebuladao-explainer",
+      title: "What is this vault, in plain English?",
+      preview:
+        "NebulaDAO's new vault is like an automated covered-call desk for ETH yield seekers: it routes capital, manages risk windows, and reports strategy performance without asking users to babysit every rebalance.",
+      strengths: ["Very beginner friendly", "Easy voiceover hook", "Good risk disclaimer"],
+      risk: "Less depth for DeFi-native viewers",
+      content:
+        "Creator Agent A Draft\n\nHook: If your ETH could hire a risk manager, what would it ask them to do first?\n\nCore script: NebulaDAO packages a vault strategy into a simple user experience. Instead of manually tracking yield windows, users deposit into a strategy that handles routing, risk controls, and reporting. The main user benefit is not magic APY; it is fewer manual decisions and a clearer way to understand where returns come from.\n\nVisual notes: open with ETH desk metaphor, then split-screen vault flow, then risk checklist.\n"
     },
     {
       id: "proposal-b",
@@ -22,7 +42,16 @@ const campaign = {
       payout: 0.00065,
       uri: "ipfs://creator-agent-b-proposal",
       tone: "Technical explainer for active DeFi users.",
-      hash: "0x9ba0...615e"
+      hash: "0x9ba0...615e",
+      score: 91,
+      proof: "draft://creator-b-nebuladao-explainer",
+      title: "A DeFi-native vault story with risk controls",
+      preview:
+        "NebulaDAO is not selling passive yield as a black box. The angle is controlled execution: where funds move, what risk budget is reserved, and how users can verify strategy state before they allocate.",
+      strengths: ["Stronger DeFi accuracy", "Better visual structure", "Lower payout ask"],
+      risk: "Needs one more analogy for beginners",
+      content:
+        "Creator Agent B Draft\n\nHook: The question is not 'what APY can this vault promise?' The better question is 'who is allowed to move funds, under what rules, and how do users verify it?'\n\nCore script: NebulaDAO's vault turns a strategy into a bounded workflow. Funds enter a contract-defined path, the strategy exposes checkpoints, and the user can inspect risk rules instead of trusting a vague yield story. For DeFi users, that matters because automation is only useful when execution rights are narrow and evidence is visible.\n\nVisual notes: show a route map, then permission gates, then a final checklist: capital path, risk boundary, proof.\n"
     }
   ],
   selectedProposalId: "proposal-b",
@@ -30,6 +59,8 @@ const campaign = {
   supplierReceipt: "ipfs://chart-pack-receipt",
   deliveryUri: "ipfs://creator-agent-b-delivery",
   deliveryHash: "0x8537...c2be",
+  deliveryPackage:
+    "Agentic Creator Escrow - Final Delivery\n\nSelected creator: Creator Agent B\n\nFinal hook: The question is not what APY this vault can promise. The better question is who can move funds, under what rules, and how users verify it.\n\nFinal script: NebulaDAO's vault turns a strategy into a bounded workflow. Funds enter a contract-defined path, the strategy exposes checkpoints, and users inspect risk rules instead of trusting a vague yield story. For DeFi users, automation is only useful when execution rights are narrow and evidence is visible.\n\nShot list: 1) Route map, 2) Permission gates, 3) Risk boundary, 4) Verification checklist.\n\nThumbnail copy: Don't trust the APY. Inspect the rules.\n",
   jobEscrow: "0xJOB_ESCROW",
   pactId: "PACT_ID"
 };
@@ -109,6 +140,84 @@ const steps = [
   }
 ];
 
+const productStages = [
+  {
+    key: "brief",
+    label: "Campaign brief",
+    actor: "DAO / Project",
+    startAt: 0,
+    completeAt: 1
+  },
+  {
+    key: "competition",
+    label: "Agent competition",
+    actor: "Creator Agents",
+    startAt: 1,
+    completeAt: 3
+  },
+  {
+    key: "review",
+    label: "Review winner",
+    actor: "DAO + CAW Sponsor",
+    startAt: 3,
+    completeAt: 4
+  },
+  {
+    key: "procurement",
+    label: "Buy resources",
+    actor: "CAW Sponsor",
+    startAt: 4,
+    completeAt: 5
+  },
+  {
+    key: "delivery",
+    label: "Delivery package",
+    actor: "Creator Agent B",
+    startAt: 5,
+    completeAt: 6
+  },
+  {
+    key: "settlement",
+    label: "Settlement",
+    actor: "CAW Sponsor",
+    startAt: 6,
+    completeAt: 7
+  }
+];
+
+const executionGroups = [
+  {
+    label: "Fund campaign",
+    actor: "CAW",
+    keys: ["create"]
+  },
+  {
+    label: "Agent proposals",
+    actor: "Creator tx x2",
+    keys: ["proposal-a", "proposal-b"]
+  },
+  {
+    label: "Select winner",
+    actor: "CAW",
+    keys: ["assign"]
+  },
+  {
+    label: "Buy resource",
+    actor: "CAW",
+    keys: ["procure"]
+  },
+  {
+    label: "Submit delivery",
+    actor: "Creator tx",
+    keys: ["deliver"]
+  },
+  {
+    label: "Settle payout",
+    actor: "CAW",
+    keys: ["settle"]
+  }
+];
+
 applyRuntimeConfig();
 
 let completed = 0;
@@ -128,6 +237,8 @@ const el = {
   assetStack: document.querySelector("#assetStack"),
   budgetMetric: document.querySelector("#budgetMetric"),
   campaignTitle: document.querySelector("#campaignTitle"),
+  chainStepList: document.querySelector("#chainStepList"),
+  chainStepSummary: document.querySelector("#chainStepSummary"),
   commandBlock: document.querySelector("#commandBlock"),
   copyCommand: document.querySelector("#copyCommand"),
   creatorPayout: document.querySelector("#creatorPayout"),
@@ -136,10 +247,10 @@ const el = {
   deliveryUri: document.querySelector("#deliveryUri"),
   escrowBalance: document.querySelector("#escrowBalance"),
   eventList: document.querySelector("#eventList"),
-  executeLiveButton: document.querySelector("#executeLiveButton"),
   homeDetails: document.querySelector("#homeDetails"),
   homeView: document.querySelector("#homeView"),
   jobStatus: document.querySelector("#jobStatus"),
+  latestProofPanel: document.querySelector("#latestProofPanel"),
   pactState: document.querySelector("#pactState"),
   procurementRail: document.querySelector("#procurementRail"),
   proposalCounter: document.querySelector("#proposalCounter"),
@@ -151,14 +262,15 @@ const el = {
   receiptSummary: document.querySelector("#receiptSummary"),
   resetButton: document.querySelector("#resetButton"),
   resourceSpend: document.querySelector("#resourceSpend"),
-  refreshRunnerButton: document.querySelector("#refreshRunnerButton"),
   roleButtons: Array.from(document.querySelectorAll("[data-role-view]")),
   roleViewPanel: document.querySelector("#roleViewPanel"),
   roleList: document.querySelector("#roleList"),
-  runnerLog: document.querySelector("#runnerLog"),
-  runnerStatusBadge: document.querySelector("#runnerStatusBadge"),
-  runnerStatusText: document.querySelector("#runnerStatusText"),
   splitList: document.querySelector("#splitList"),
+  stepFocusBody: document.querySelector("#stepFocusBody"),
+  stepFocusEyebrow: document.querySelector("#stepFocusEyebrow"),
+  stepFocusGrid: document.querySelector("#stepFocusGrid"),
+  stepFocusPanel: document.querySelector("#stepFocusPanel"),
+  stepFocusTitle: document.querySelector("#stepFocusTitle"),
   supplierState: document.querySelector("#supplierState"),
   timeline: document.querySelector("#timeline"),
   workbenchView: document.querySelector("#workbenchView")
@@ -174,6 +286,8 @@ const carousel = {
 };
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const AUTO_SYNC_ATTEMPTS = 10;
+const AUTO_SYNC_INTERVAL_MS = 3000;
 
 function formatEth(value) {
   return `${value.toFixed(5).replace(/0+$/, "").replace(/\.$/, "")} SETH`;
@@ -411,7 +525,9 @@ function getReceipts() {
     hash: step.hash || "",
     note:
       step.note ||
-      (index < completed ? "Prototype state advanced. Replace with CAW/contract tx hash after live run." : "Waiting for this demo step.")
+      (index < completed
+        ? "Preview state advanced. Run live execution to attach a transaction hash."
+        : "Waiting for this workflow step.")
   }));
 
   return [...cawProofReceipts, ...lifecycleReceipts];
@@ -424,10 +540,433 @@ function getLatestProofSummary() {
   }
 
   if (completed > 0) {
-    return "Lifecycle state simulated";
+    return "Preview state advanced";
   }
 
   return "Awaiting real CAW hash";
+}
+
+function getLatestConfirmedReceipt(receipts = getReceipts()) {
+  return [...receipts].reverse().find((receipt) => receipt.hash);
+}
+
+function getStepResult(stepKey) {
+  const step = steps.find((item) => item.key === stepKey);
+  const runnerResult = runner.steps?.[stepKey] || {};
+  return {
+    status: step?.runStatus || runnerResult.status || "",
+    subStatus: runnerResult.subStatus || "",
+    txHash: step?.hash || runnerResult.txHash || "",
+    message: step?.note || runnerResult.message || "",
+    requestId: step?.tx || runnerResult.requestId || ""
+  };
+}
+
+function getLatestConfirmedStep() {
+  return [...steps].reverse().find((step) => step.hash);
+}
+
+function explorerLink(hash) {
+  return `https://sepolia.etherscan.io/tx/${hash}`;
+}
+
+function contractExplorerLink(address) {
+  return `https://sepolia.etherscan.io/address/${address}`;
+}
+
+function isTransactionHash(value) {
+  return /^0x[a-fA-F0-9]{64}$/.test(String(value || ""));
+}
+
+function isSuccessfulTxResult(result) {
+  return isTransactionHash(result.txHash) && /success|completed|confirmed/i.test(String(result.status || ""));
+}
+
+function getCurrentProductStageIndex() {
+  const index = productStages.findIndex((stage) => completed < stage.completeAt);
+  return index === -1 ? productStages.length - 1 : index;
+}
+
+function getCurrentProductStage() {
+  return productStages[getCurrentProductStageIndex()];
+}
+
+function getStepByKey(stepKey) {
+  return steps.find((step) => step.key === stepKey);
+}
+
+function getStepForProposal(proposalId) {
+  return getStepByKey(proposalId);
+}
+
+function getNextCawStep(fromIndex = completed) {
+  return steps.slice(fromIndex).find((step) => step.actor === "CAW Sponsor");
+}
+
+function renderStageControls(liveLabel, previewLabel = "Preview next state") {
+  const step = getCurrentStep();
+  const readiness = getCurrentRunnerReadiness();
+  const missing = readiness.missing || [];
+  const isComplete = completed >= steps.length;
+  const alreadyConfirmed = Boolean(step.hash || runner.steps?.[step.key]?.txHash);
+  const nextCawStep = getNextCawStep();
+  const ready = runner.available && missing.length === 0 && !runner.running && !isComplete && !alreadyConfirmed;
+  const modeNote =
+    step.actor === "CAW Sponsor"
+      ? "This action uses the CAW Sponsor wallet under the approved pact."
+      : `This action records creator-side evidence. The next CAW sponsor action is ${nextCawStep?.label || "not required"}.`;
+
+  if (isComplete) {
+    return `
+      <div class="stage-controls">
+        <button class="primary-button" type="button" disabled>Workflow complete</button>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="stage-controls">
+      <button class="primary-button" type="button" data-stage-action="execute-live" ${ready ? "" : "disabled"}>
+        ${runner.running ? (step.actor === "CAW Sponsor" ? "Waiting for CAW approval..." : "Submitting transaction...") : alreadyConfirmed ? "Confirmed on-chain" : liveLabel}
+      </button>
+      <button class="ghost-button" type="button" data-stage-action="simulate-next" ${runner.running ? "disabled" : ""}>${previewLabel}</button>
+      <button class="mini-button" type="button" data-stage-action="sync" ${runner.running ? "disabled" : ""}>
+        ${runner.running ? "Refreshing..." : "Refresh proofs"}
+      </button>
+    </div>
+    <p class="stage-control-note">
+      Current action: <strong>${step.label}</strong>. ${modeNote} ${
+        alreadyConfirmed
+          ? "This action is already confirmed for the current workflow."
+          : missing.length > 0
+          ? `Live execution is not configured yet: ${missing.join(", ")}.`
+          : runner.available
+            ? "Live execution is ready. CAW sponsor actions may require mobile approval."
+            : "Live execution is offline. You can continue in preview mode."
+      }
+    </p>
+  `;
+}
+
+function renderBriefStage() {
+  const taskOptions = campaign.brief.taskOptions
+    .map((option) => `<option ${option === campaign.brief.taskType ? "selected" : ""}>${option}</option>`)
+    .join("");
+  const deliverables = campaign.brief.deliverables
+    .map((item) => `<span class="deliverable-chip">${item}</span>`)
+    .join("");
+
+  return `
+    <div class="stage-brief-layout">
+      <form class="campaign-brief-form">
+        <label>
+          DAO / Project
+          <input value="${campaign.brief.dao}" aria-label="DAO project" />
+        </label>
+        <label>
+          Task type
+          <select aria-label="Task type">${taskOptions}</select>
+        </label>
+        <label class="is-wide">
+          Campaign objective
+          <textarea aria-label="Campaign objective">${campaign.brief.objective}</textarea>
+        </label>
+        <label>
+          Target audience
+          <input value="${campaign.brief.audience}" aria-label="Target audience" />
+        </label>
+        <label>
+          Deadline
+          <input value="${campaign.brief.deadline}" aria-label="Deadline" />
+        </label>
+        <label class="is-wide">
+          Style requirements
+          <textarea aria-label="Style requirements">${campaign.brief.tone}</textarea>
+        </label>
+      </form>
+      <aside class="campaign-escrow-card">
+        <p class="eyebrow">Escrow setup</p>
+        <h4>${formatEth(campaign.budget)} campaign budget</h4>
+        <div class="mini-ledger">
+          <span>Contract</span><strong>${shortAddress(campaign.jobEscrow)}</strong>
+          <span>CAW wallet</span><strong>${shortAddress(campaign.sponsor)}</strong>
+          <span>Platform fee</span><strong>${formatEth(campaign.platformFee)}</strong>
+        </div>
+        <div class="deliverable-strip">${deliverables}</div>
+      </aside>
+    </div>
+    ${renderStageControls("Fund campaign with CAW", "Preview funded campaign")}
+  `;
+}
+
+function renderProposalCard(proposal, index, state) {
+  const step = getStepForProposal(proposal.id);
+  const result = getStepResult(proposal.id);
+  const isSubmitted = Boolean(result.txHash) || index < state.proposalCount;
+  const isSelected = proposal.id === campaign.selectedProposalId;
+
+  return `
+    <article class="agent-proposal-card ${isSubmitted ? "is-submitted" : ""} ${isSelected ? "is-selected" : ""}">
+      <header>
+        <div>
+          <p class="eyebrow">${isSubmitted ? "On-chain proposal" : "Draft ready"}</p>
+          <h4>${proposal.agent}</h4>
+        </div>
+        <strong class="score-pill">${proposal.score}</strong>
+      </header>
+      <h5>${proposal.title}</h5>
+      <p>${proposal.preview}</p>
+      <div class="proposal-evidence-grid">
+        <span>Ask</span><strong>${formatEth(proposal.payout)}</strong>
+        <span>Draft link</span><strong>${proposal.proof}</strong>
+        <span>URI</span><strong>${proposal.uri}</strong>
+        <span>Tx proof</span><strong>${result.txHash ? shortHash(result.txHash) : step.tx}</strong>
+      </div>
+      <div class="proposal-strengths">
+        ${proposal.strengths.map((item) => `<span>${item}</span>`).join("")}
+      </div>
+      <button class="mini-button" type="button" data-stage-action="download-proposal" data-proposal-id="${proposal.id}">
+        Download draft
+      </button>
+    </article>
+  `;
+}
+
+function renderCompetitionStage(state) {
+  const submitted = Math.min(state.proposalCount, campaign.proposals.length);
+  const proposalSteps = ["proposal-a", "proposal-b"].map((key) => getStepByKey(key));
+  const missing = proposalSteps.flatMap((step) => runner.stepReadiness?.[step.key]?.missing || []);
+  const uniqueMissing = [...new Set(missing)];
+  const confirmedCount = proposalSteps.filter((step) => getStepResult(step.key).txHash).length;
+  const ready = runner.available && uniqueMissing.length === 0 && !runner.running && confirmedCount < proposalSteps.length;
+
+  return `
+    <div class="stage-callout">
+      <strong>${submitted}/2 agent proposals submitted</strong>
+      <span>Drafts are prepared for this campaign; proposal records can still be written on-chain before review.</span>
+    </div>
+    <div class="agent-competition-grid">
+      ${campaign.proposals.map((proposal, index) => renderProposalCard(proposal, index, state)).join("")}
+    </div>
+    <div class="stage-controls">
+      <button class="primary-button" type="button" data-stage-action="execute-proposals" ${ready ? "" : "disabled"}>
+        ${runner.running ? "Submitting proposals..." : confirmedCount > 0 ? "Submit remaining proposals" : "Submit both agent proposals"}
+      </button>
+      <button class="ghost-button" type="button" data-stage-action="simulate-proposals" ${runner.running ? "disabled" : ""}>Preview agent proposals</button>
+      <button class="mini-button" type="button" data-stage-action="sync" ${runner.running ? "disabled" : ""}>
+        ${runner.running ? "Refreshing..." : "Refresh proofs"}
+      </button>
+    </div>
+    <p class="stage-control-note">
+      One click records Creator Agent A and B proposals sequentially. These proposal records are signed by the creator wallets.
+      ${
+        uniqueMissing.length > 0
+          ? `Live proposal submission is not configured yet: ${uniqueMissing.join(", ")}.`
+          : runner.available
+            ? "Live proposal submission is ready."
+            : "Live execution is offline. You can continue in preview mode."
+      }
+    </p>
+  `;
+}
+
+function renderReviewStage() {
+  const selected = getSelectedProposal();
+  const reviewCards = campaign.proposals
+    .map(
+      (proposal) => `
+        <article class="review-card ${proposal.id === selected.id ? "is-winner" : ""}">
+          <header>
+            <label>
+              <input type="radio" name="winner" ${proposal.id === selected.id ? "checked" : ""} />
+              <span>${proposal.agent}</span>
+            </label>
+            <strong>${proposal.score}<small>/100</small></strong>
+          </header>
+          <h5>${proposal.title}</h5>
+          <p>${proposal.preview}</p>
+          <div class="review-meta">
+            <div><span>Payout ask</span><strong>${formatEth(proposal.payout)}</strong></div>
+            <div><span>Draft proof</span><strong>${proposal.proof}</strong></div>
+            <div><span>Review note</span><strong>${proposal.risk}</strong></div>
+          </div>
+          <div class="proposal-strengths">
+            ${proposal.strengths.map((item) => `<span>${item}</span>`).join("")}
+          </div>
+        </article>
+      `
+    )
+    .join("");
+
+  return `
+    <div class="review-layout">
+      <div class="review-intro-card">
+        <p class="eyebrow">Human review checkpoint</p>
+        <h4>Review submitted drafts, then let the Sponsor Agent record the winner.</h4>
+        <p class="review-note">Default winner is ${selected.agent}: better DeFi accuracy, stronger visual structure, and lower payout ask.</p>
+      </div>
+      <aside class="review-decision-card">
+        <p class="eyebrow">Selected creator</p>
+        <h4>${selected.agent}</h4>
+        <div class="mini-ledger">
+          <span>Score</span><strong>${selected.score}/100</strong>
+          <span>Payout</span><strong>${formatEth(selected.payout)}</strong>
+          <span>On-chain action</span><strong>assignCreatorFromProposal</strong>
+        </div>
+      </aside>
+    </div>
+    <div class="review-board">
+      <div class="review-scoreboard">${reviewCards}</div>
+    </div>
+    ${renderStageControls("Confirm Creator Agent B with CAW", "Preview selected creator")}
+  `;
+}
+
+function renderProcurementStage(state) {
+  const step = getStepByKey("procure");
+  const result = getStepResult(step.key);
+
+  return `
+    <div class="procurement-stage-layout">
+      <article class="supplier-invoice-card">
+        <p class="eyebrow">Resource request</p>
+        <h4>Chart Pack Supplier</h4>
+        <p>Creator B needs a reusable vault-flow chart pack and data-source notes before final delivery.</p>
+        <div class="mini-ledger">
+          <span>Spend</span><strong>${formatEth(campaign.supplierSpend)}</strong>
+          <span>Receipt</span><strong>${campaign.supplierReceipt}</strong>
+          <span>Status</span><strong>${state.hasProcurement ? "Paid" : "Awaiting CAW payment"}</strong>
+        </div>
+      </article>
+      <article class="policy-card">
+        <p class="eyebrow">CAW policy checks</p>
+        <h4>Agent can spend, but only inside the pact.</h4>
+        <ul>
+          <li>Target contract: JobEscrow only</li>
+          <li>Supplier spend cannot consume reserved creator payout</li>
+          <li>Transaction hash is captured for Sepolia Scan review</li>
+        </ul>
+        <code>${result.txHash || step.tx}</code>
+      </article>
+    </div>
+    ${renderStageControls("Pay supplier with CAW", "Preview resource payment")}
+  `;
+}
+
+function renderDeliveryStage(state) {
+  const selected = getSelectedProposal();
+  const files = ["final-script.md", "shot-list.md", "thumbnail-copy.txt", "source-notes.md"];
+
+  return `
+    <div class="delivery-stage-layout">
+      <article class="delivery-package-card">
+        <p class="eyebrow">Creator delivery</p>
+        <h4>${selected.agent} final package</h4>
+        <p>${campaign.deliveryPackage.split("\n\n")[2]}</p>
+        <div class="download-list">
+          ${files.map((file) => `<button class="mini-button" type="button" data-stage-action="download-delivery">${file}</button>`).join("")}
+        </div>
+      </article>
+      <article class="delivery-proof-card">
+        <p class="eyebrow">Verifiable handoff</p>
+        <div class="mini-ledger">
+          <span>Delivery URI</span><strong>${state.hasDelivery ? campaign.deliveryUri : "Ready to submit"}</strong>
+          <span>Delivery hash</span><strong>${state.hasDelivery ? campaign.deliveryHash : "Pending contract write"}</strong>
+          <span>Creator</span><strong>${shortAddress(campaign.creatorB)}</strong>
+        </div>
+      </article>
+    </div>
+    ${renderStageControls("Submit delivery hash", "Preview submitted delivery")}
+  `;
+}
+
+function renderSettlementStage(state) {
+  const selected = getSelectedProposal();
+  const refund = campaign.budget - campaign.supplierSpend - selected.payout - campaign.platformFee;
+
+  return `
+    <div class="settlement-stage-layout">
+      <article class="settlement-check-card">
+        <p class="eyebrow">Acceptance checklist</p>
+        <h4>${state.isSettled ? "Settlement complete" : "Ready to accept and pay"}</h4>
+        <div class="check-row is-done">Campaign funded</div>
+        <div class="check-row is-done">Winner selected</div>
+        <div class="check-row is-done">Supplier receipt recorded</div>
+        <div class="check-row ${state.hasDelivery ? "is-done" : ""}">Delivery hash submitted</div>
+      </article>
+      <article class="settlement-split-card">
+        <p class="eyebrow">Payout split</p>
+        <div class="mini-ledger">
+          <span>Creator B</span><strong>${formatEth(selected.payout)}</strong>
+          <span>Platform</span><strong>${formatEth(campaign.platformFee)}</strong>
+          <span>Sponsor refund</span><strong>${formatEth(refund)}</strong>
+        </div>
+      </article>
+    </div>
+    ${renderStageControls(state.isSettled ? "Settlement complete" : "Accept delivery and settle with CAW", "Preview settlement")}
+  `;
+}
+
+function renderStageWorkspace(stage, state) {
+  if (stage.key === "brief") {
+    return renderBriefStage(state);
+  }
+  if (stage.key === "competition") {
+    return renderCompetitionStage(state);
+  }
+  if (stage.key === "review") {
+    return renderReviewStage(state);
+  }
+  if (stage.key === "procurement") {
+    return renderProcurementStage(state);
+  }
+  if (stage.key === "delivery") {
+    return renderDeliveryStage(state);
+  }
+  return renderSettlementStage(state);
+}
+
+function getStageCopy(stage, state) {
+  const copies = {
+    brief: [
+      "Fund campaign",
+      "Define the DAO content brief and let the CAW Sponsor Agent escrow the campaign budget into JobEscrow."
+    ],
+    competition: [
+      "Agent competition",
+      "Two Creator / Analyst Agents generate candidate drafts, payout asks, and proof links. Proposal records can be written on-chain before review."
+    ],
+    review: [
+      "Select winner",
+      "The DAO reviews draft quality, payout asks, and risk notes, then the CAW Sponsor Agent records the selected creator on-chain."
+    ],
+    procurement: [
+      "Buy resource",
+      "The Sponsor Agent purchases a chart pack or research resource for the selected creator. This is the clearest CAW-controlled real fund execution step."
+    ],
+    delivery: [
+      "Submit delivery",
+      "The selected creator delivers the final content package. Users can download the assets while the delivery URI and hash are recorded on-chain."
+    ],
+    settlement: [
+      state.isSettled ? "Settlement complete" : "Settle payout",
+      "After accepting the delivery, the CAW Sponsor Agent releases the creator payout, platform fee, and remaining sponsor refund."
+    ]
+  };
+
+  return copies[stage.key];
+}
+
+function renderStepFocus() {
+  const state = getState();
+  const stage = getCurrentProductStage();
+  const stageNumber = getCurrentProductStageIndex() + 1;
+  const [title, body] = getStageCopy(stage, state);
+
+  el.stepFocusEyebrow.textContent = `Stage ${String(stageNumber).padStart(2, "0")} of ${productStages.length}`;
+  el.stepFocusTitle.textContent = title;
+  el.stepFocusBody.textContent = body;
+  el.stepFocusGrid.innerHTML = renderStageWorkspace(stage, state);
 }
 
 function getRoleCopy(role, state) {
@@ -519,7 +1058,7 @@ function getRoleCopy(role, state) {
       actions: [
         ["Current state", state.status],
         ["Executed records", `${completed} / ${steps.length}`],
-        ["Next command", getCurrentStep().tx]
+        ["Next transaction", getCurrentStep().tx]
       ],
       evidenceTitle: "Evidence chain",
       evidence: [
@@ -616,7 +1155,25 @@ function renderPresenter(state) {
 function renderReceipts() {
   const receipts = getReceipts();
   const confirmedCount = receipts.filter((receipt) => receipt.hash).length;
+  const latest = getLatestConfirmedReceipt(receipts);
+  const currentStep = getCurrentStep();
+
   el.receiptSummary.textContent = `${confirmedCount} confirmed`;
+  el.latestProofPanel.innerHTML = latest
+    ? `
+        <p class="eyebrow">Confirmed transaction</p>
+        <h4>${latest.label}</h4>
+        <code>${latest.hash}</code>
+        <a class="receipt-link primary-proof-link" href="${explorerLink(latest.hash)}" target="_blank" rel="noreferrer">
+          View on Sepolia Scan
+        </a>
+      `
+    : `
+        <p class="eyebrow">Waiting for proof</p>
+        <h4>${currentStep.label}</h4>
+        <code>No transaction hash yet</code>
+        <small>Use the current live action to create the first on-chain proof.</small>
+      `;
 
   el.receiptList.innerHTML = receipts
     .map((receipt, index) => {
@@ -625,10 +1182,10 @@ function renderReceipts() {
       const statusLabel =
         status === "confirmed"
           ? "confirmed"
-          : status === "awaiting"
-            ? "awaiting hash"
+            : status === "awaiting"
+              ? "awaiting hash"
             : status === "simulated"
-              ? "simulated"
+              ? "previewed"
               : "pending";
 
       return `
@@ -645,7 +1202,7 @@ function renderReceipts() {
           </div>
           ${
             receipt.hash
-              ? `<a class="receipt-link" href="${explorer}" target="_blank" rel="noreferrer">View on Sepolia explorer</a>`
+              ? `<a class="receipt-link" href="${explorer}" target="_blank" rel="noreferrer">View on Sepolia Scan</a>`
               : `<small>${receipt.note}</small>`
           }
         </article>
@@ -659,39 +1216,47 @@ function getCurrentRunnerReadiness() {
   return runner.stepReadiness?.[step.key] || { missing: [] };
 }
 
-function renderRunnerPanel() {
-  if (!el.runnerStatusBadge) {
+function renderChainSteps() {
+  if (!el.chainStepList) {
     return;
   }
 
-  const step = getCurrentStep();
-  const readiness = getCurrentRunnerReadiness();
-  const missing = readiness.missing || [];
-  const isComplete = completed >= steps.length;
-  const ready = runner.available && missing.length === 0 && !runner.running && !isComplete;
-  const badgeClass = runner.available ? (missing.length > 0 ? "is-warning" : "is-live") : "is-offline";
+  const confirmedCount = steps.filter((step) => isSuccessfulTxResult(getStepResult(step.key))).length;
+  el.chainStepSummary.textContent = `${confirmedCount} tx confirmed`;
+  el.chainStepList.innerHTML = executionGroups
+    .map((group, index) => {
+      const results = group.keys.map((key) => ({ key, ...getStepResult(key) }));
+      const doneCount = results.filter(isSuccessfulTxResult).length;
+      const isDone = doneCount === group.keys.length;
+      const isCurrent = group.keys.includes(getCurrentStep().key) && !isDone;
+      const proofText =
+        doneCount > 0
+          ? `${doneCount}/${group.keys.length} tx confirmed`
+          : group.keys.map((key) => getStepByKey(key)?.tx).join(" + ");
+      const txLinks = results
+        .filter(isSuccessfulTxResult)
+        .map((result) => {
+          const label = result.key.includes("proposal") ? (result.key.endsWith("a") ? "A Scan" : "B Scan") : "Scan";
+          return `<a href="${explorerLink(result.txHash)}" target="_blank" rel="noreferrer">${label}</a>`;
+        })
+        .join("");
+      const fallbackLink =
+        group.actor === "CAW" && !txLinks
+          ? `<a href="${contractExplorerLink(campaign.jobEscrow)}" target="_blank" rel="noreferrer">Contract</a>`
+          : "";
 
-  el.runnerStatusBadge.className = `runner-badge ${badgeClass}`;
-  el.runnerStatusBadge.textContent = runner.available
-    ? missing.length > 0
-      ? "Needs env"
-      : "Runner live"
-    : "Runner offline";
-
-  el.runnerStatusText.textContent = runner.available
-    ? missing.length > 0
-      ? `Current step "${step.label}" needs: ${missing.join(", ")}.`
-      : `Current live step: ${step.label} via ${readiness.type === "caw" ? "CAW pact" : "creator wallet"}.`
-    : "Start the local Agent Runner to execute real CAW/cast transactions from the workbench.";
-
-  el.runnerLog.textContent = runner.message;
-  el.executeLiveButton.disabled = !ready;
-  el.executeLiveButton.textContent = runner.running
-    ? "Executing..."
-    : isComplete
-      ? "Live workflow complete"
-      : `Execute live: ${step.label}`;
-  el.refreshRunnerButton.disabled = runner.running;
+      return `
+        <article class="chain-step ${isDone ? "is-done" : ""} ${isCurrent ? "is-current" : ""}">
+          <span>${index + 1}</span>
+          <div>
+            <strong>${group.label}</strong>
+            <small>${group.actor} · ${proofText}</small>
+          </div>
+          ${txLinks || fallbackLink || `<em>${isCurrent ? "Now" : "Waiting"}</em>`}
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function renderRoles() {
@@ -716,14 +1281,16 @@ function renderRoles() {
 }
 
 function renderTimeline() {
-  el.timeline.innerHTML = steps
-    .map((step, index) => {
-      const statusClass = index < completed ? "is-done" : index === completed ? "is-current" : "";
+  const currentStageIndex = getCurrentProductStageIndex();
+
+  el.timeline.innerHTML = productStages
+    .map((stage, index) => {
+      const statusClass = completed >= stage.completeAt ? "is-done" : index === currentStageIndex ? "is-current" : "";
       return `
         <article class="step ${statusClass}">
           <span class="step-index">${index + 1}</span>
-          <strong>${step.label}</strong>
-          <small>${step.actor}</small>
+          <strong>${stage.label}</strong>
+          <small>${stage.actor}</small>
         </article>
       `;
     })
@@ -830,7 +1397,7 @@ function renderEvents() {
               ? `${shortHash(step.hash)} | confirmed`
               : step.runStatus
                 ? `${step.tx} | ${step.runStatus}`
-                : `${step.tx} | simulated lifecycle record`
+                : `${step.tx} | preview record`
           }</code>
         </div>
       `
@@ -855,6 +1422,7 @@ function renderCommand() {
 }
 
 function renderMetrics(state) {
+  const currentStage = getCurrentProductStage();
   el.campaignTitle.textContent = campaign.title;
   el.budgetMetric.textContent = formatEth(campaign.budget);
   el.jobStatus.textContent = state.status;
@@ -862,8 +1430,13 @@ function renderMetrics(state) {
   el.creatorPayout.textContent = formatEth(state.creatorPayout);
   el.resourceSpend.textContent = formatEth(state.resourceSpend);
   el.pactState.textContent = completed > 0 ? "Active" : "Ready";
-  el.advanceButton.disabled = completed >= steps.length;
-  el.advanceButton.textContent = completed >= steps.length ? "Workflow complete" : "Simulate next state";
+  el.advanceButton.disabled = runner.running || completed >= steps.length;
+  el.advanceButton.textContent = runner.running
+    ? "Waiting for live execution"
+    : completed >= steps.length
+      ? "Workflow complete"
+      : `Preview: ${currentStage.label}`;
+  el.resetButton.disabled = runner.running;
 }
 
 async function copyText(text) {
@@ -883,8 +1456,35 @@ async function copyText(text) {
   textarea.remove();
 }
 
+function downloadTextFile(filename, text) {
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+function downloadProposal(proposalId) {
+  const proposal = campaign.proposals.find((item) => item.id === proposalId);
+  if (!proposal) {
+    return;
+  }
+
+  downloadTextFile(`${proposal.id}-draft.md`, proposal.content);
+}
+
+function downloadDeliveryPackage() {
+  downloadTextFile("creator-agent-b-final-delivery.md", campaign.deliveryPackage);
+}
+
 function render() {
   const state = getState();
+  renderChainSteps();
+  renderStepFocus();
   renderRoles();
   renderRoleView(state);
   renderPresenter(state);
@@ -897,7 +1497,6 @@ function render() {
   renderEvents();
   renderCommand();
   renderMetrics(state);
-  renderRunnerPanel();
 }
 
 async function fetchRunnerConfig() {
@@ -917,7 +1516,7 @@ async function fetchRunnerConfig() {
       available: false,
       message: `Runner offline. Start it with: node apps/agent-runner/server.js`
     };
-    renderRunnerPanel();
+    render();
     return null;
   }
 }
@@ -935,25 +1534,70 @@ async function postRunner(path, body) {
   return payload;
 }
 
+function applyStepResult(step, result) {
+  if (result.txHash) {
+    setStepHash(step.key, result.txHash, result.status, result.message);
+    completed = Math.max(completed, steps.findIndex((item) => item.key === step.key) + 1);
+    return true;
+  }
+
+  setStepHash(step.key, "", result.status || "Submitted", result.message);
+  return false;
+}
+
+async function waitForStepConfirmation(step) {
+  for (let attempt = 1; attempt <= AUTO_SYNC_ATTEMPTS; attempt += 1) {
+    runner.message = `Waiting for ${step.label} approval/confirmation... auto-sync ${attempt}/${AUTO_SYNC_ATTEMPTS}`;
+    render();
+    await delay(AUTO_SYNC_INTERVAL_MS);
+
+    const payload = await postRunner("/api/runner/refresh", { stepKey: step.key });
+    applyRunnerConfig(payload.config);
+    const result = payload.result || {};
+
+    if (result.txHash) {
+      applyStepResult(step, result);
+      runner.message = `${step.label} confirmed: ${shortHash(result.txHash)}`;
+      return true;
+    }
+
+    if (/failed|rejected/i.test(String(result.status || ""))) {
+      runner.message = result.message || `${step.label} was rejected or failed.`;
+      return false;
+    }
+  }
+
+  runner.message = `${step.label} is still waiting for CAW approval or broadcast. You can approve in CAW DEV, then click Sync all proofs.`;
+  return false;
+}
+
+function delay(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
 async function executeLiveStep() {
   const step = getCurrentStep();
+  if (runner.running) {
+    return;
+  }
+
   runner = {
     ...runner,
     running: true,
     message: `Executing ${step.label}. CAW sponsor steps may require approval in the CAW DEV app.`
   };
-  renderRunnerPanel();
+  render();
 
   try {
     const payload = await postRunner("/api/runner/run", { stepKey: step.key });
     applyRunnerConfig(payload.config);
     const result = payload.result || {};
-    if (result.txHash) {
-      setStepHash(step.key, result.txHash, result.status, result.message);
-      completed = Math.max(completed, steps.findIndex((item) => item.key === step.key) + 1);
+    if (applyStepResult(step, result)) {
       runner.message = `${step.label} confirmed: ${shortHash(result.txHash)}`;
+    } else if (step.actor === "CAW Sponsor") {
+      runner.message = result.message || `${step.label} submitted. Waiting for CAW approval...`;
+      await waitForStepConfirmation(step);
     } else {
-      setStepHash(step.key, "", result.status || "Submitted", result.message);
       runner.message = result.message || `${step.label} submitted. Sync again after approval.`;
     }
   } catch (error) {
@@ -964,18 +1608,83 @@ async function executeLiveStep() {
   }
 }
 
-async function refreshRunnerState() {
-  const step = getCurrentStep();
-  runner = { ...runner, running: true, message: `Syncing ${step.label} status...` };
-  renderRunnerPanel();
+async function executeProposalBatch() {
+  if (runner.running) {
+    return;
+  }
+
+  const proposalStepKeys = ["proposal-a", "proposal-b"];
+  runner = {
+    ...runner,
+    running: true,
+    message: "Submitting both creator proposals sequentially via cast wallets..."
+  };
+  render();
 
   try {
-    const payload = await postRunner("/api/runner/refresh", { stepKey: step.key });
-    applyRunnerConfig(payload.config);
-    runner.message = payload.result?.message || "Runner state synced.";
+    for (const stepKey of proposalStepKeys) {
+      const step = getStepByKey(stepKey);
+      if (!step || getStepResult(stepKey).txHash) {
+        completed = Math.max(completed, steps.findIndex((item) => item.key === stepKey) + 1);
+        continue;
+      }
+
+      runner.message = `Executing ${step.label}. This is a creator-wallet transaction, not a CAW sponsor call.`;
+      render();
+      const payload = await postRunner("/api/runner/run", { stepKey });
+      applyRunnerConfig(payload.config);
+      const result = payload.result || {};
+
+      if (!applyStepResult(step, result)) {
+        runner.message = result.message || `${step.label} submitted. Sync again after broadcast.`;
+        break;
+      }
+    }
+
+    runner.message = "Agent proposal batch finished. Review both candidates, then confirm the winner with CAW.";
   } catch (error) {
-    const config = await fetchRunnerConfig();
-    runner.message = config ? "Runner config synced." : error.message;
+    runner.message = error.message;
+  } finally {
+    runner.running = false;
+    render();
+  }
+}
+
+async function refreshAllProofs() {
+  if (runner.running) {
+    return;
+  }
+
+  const cawSteps = steps.filter((step) => step.actor === "CAW Sponsor");
+  let newProofCount = 0;
+  runner = { ...runner, running: true, message: "Syncing all CAW sponsor proofs..." };
+  render();
+
+  try {
+    for (let index = 0; index < cawSteps.length; index += 1) {
+      const step = cawSteps[index];
+      runner.message = `Syncing CAW proof ${index + 1}/${cawSteps.length}: ${step.label}...`;
+      render();
+
+      const beforeHash = getStepResult(step.key).txHash;
+      const payload = await postRunner("/api/runner/refresh", { stepKey: step.key });
+      applyRunnerConfig(payload.config);
+      const result = payload.result || {};
+
+      if (result.txHash) {
+        applyStepResult(step, result);
+        if (!beforeHash) {
+          newProofCount += 1;
+        }
+      }
+    }
+
+    runner.message =
+      newProofCount > 0
+        ? `Synced ${newProofCount} new CAW proof${newProofCount > 1 ? "s" : ""}.`
+        : "No new CAW proofs found yet. If approval is pending, approve in CAW DEV and sync again.";
+  } catch (error) {
+    runner.message = error.message;
   } finally {
     runner.running = false;
     render();
@@ -1106,19 +1815,68 @@ el.roleButtons.forEach((button) => {
 });
 
 el.advanceButton.addEventListener("click", () => {
+  if (runner.running) {
+    return;
+  }
+
   completed = Math.min(completed + 1, steps.length);
   render();
 });
 
-el.executeLiveButton.addEventListener("click", () => {
-  executeLiveStep();
-});
+el.stepFocusPanel.addEventListener("click", (event) => {
+  const actionTarget = event.target.closest("[data-stage-action]");
+  if (!actionTarget) {
+    return;
+  }
 
-el.refreshRunnerButton.addEventListener("click", () => {
-  refreshRunnerState();
+  const action = actionTarget.dataset.stageAction;
+  const passiveActions = new Set(["download-proposal", "download-delivery"]);
+  if (runner.running && !passiveActions.has(action)) {
+    return;
+  }
+
+  if (action === "execute-live") {
+    executeLiveStep();
+    return;
+  }
+
+  if (action === "execute-proposals") {
+    executeProposalBatch();
+    return;
+  }
+
+  if (action === "sync") {
+    refreshAllProofs();
+    return;
+  }
+
+  if (action === "simulate-proposals") {
+    completed = Math.max(completed, 3);
+    render();
+    return;
+  }
+
+  if (action === "simulate-next") {
+    completed = Math.min(completed + 1, steps.length);
+    render();
+    return;
+  }
+
+  if (action === "download-proposal") {
+    downloadProposal(actionTarget.dataset.proposalId);
+    return;
+  }
+
+  if (action === "download-delivery") {
+    downloadDeliveryPackage();
+  }
 });
 
 el.resetButton.addEventListener("click", () => {
+  if (runner.running) {
+    return;
+  }
+
   completed = 0;
   render();
 });

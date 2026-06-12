@@ -16,6 +16,8 @@ const host = process.env.ACE_RUNNER_HOST || "127.0.0.1";
 const fileEnv = loadEnvFile(envFile);
 const env = { ...fileEnv, ...process.env };
 const state = loadState();
+const runId = normalizeRunId(env.ACE_RUN_ID || env.JOBESCROW_RUN_ID || "001");
+const jobId = normalizeJobId(env.ACE_JOB_ID || env.JOBESCROW_JOB_ID || "1");
 
 const STEP_HASH_ENV = {
   create: "JOBESCROW_CREATE_TX_HASH",
@@ -31,7 +33,7 @@ const STEPS = {
   create: {
     label: "Fund campaign",
     type: "caw",
-    requestId: "jobescrow-create-001",
+    requestId: requestIdFor("create"),
     required: ["JOB_ESCROW", "SRC", "PLATFORM", "PACT_ID"],
     description: "Create a funded JobEscrow campaign",
     method: "createJob(string,string,address,uint256)",
@@ -41,59 +43,59 @@ const STEPS = {
   "proposal-a": {
     label: "Proposal A",
     type: "cast",
-    requestId: "jobescrow-proposal-a-001",
+    requestId: requestIdFor("proposal-a"),
     required: ["JOB_ESCROW", "SEPOLIA_RPC_URL", "CREATOR_A_PRIVATE_KEY"],
     description: "Creator Agent A records its proposal",
     signature: "submitProposal(uint256,uint256,string,bytes32)",
-    args: async () => ["1", "700000000000000", "ipfs://creator-agent-a-proposal", await castKeccak("proposal-a")],
+    args: async () => [jobId, "700000000000000", "ipfs://creator-agent-a-proposal", await castKeccak(`proposal-a-${runId}`)],
     privateKeyEnv: "CREATOR_A_PRIVATE_KEY"
   },
   "proposal-b": {
     label: "Proposal B",
     type: "cast",
-    requestId: "jobescrow-proposal-b-001",
+    requestId: requestIdFor("proposal-b"),
     required: ["JOB_ESCROW", "SEPOLIA_RPC_URL", "CREATOR_B_PRIVATE_KEY"],
     description: "Creator Agent B records its proposal",
     signature: "submitProposal(uint256,uint256,string,bytes32)",
-    args: async () => ["1", "650000000000000", "ipfs://creator-agent-b-proposal", await castKeccak("proposal-b")],
+    args: async () => [jobId, "650000000000000", "ipfs://creator-agent-b-proposal", await castKeccak(`proposal-b-${runId}`)],
     privateKeyEnv: "CREATOR_B_PRIVATE_KEY"
   },
   assign: {
     label: "Select winner",
     type: "caw",
-    requestId: "jobescrow-assign-001",
+    requestId: requestIdFor("assign"),
     required: ["JOB_ESCROW", "SRC", "CREATOR", "PACT_ID"],
     description: "Assign selected creator from proposal",
     method: "assignCreatorFromProposal(uint256,address)",
-    args: () => ["1", env.CREATOR]
+    args: () => [jobId, env.CREATOR]
   },
   procure: {
     label: "Buy resource",
     type: "caw",
-    requestId: "jobescrow-supplier-001",
+    requestId: requestIdFor("supplier"),
     required: ["JOB_ESCROW", "SRC", "SUPPLIER", "PACT_ID"],
     description: "Pay supplier for campaign resource",
     method: "paySupplier(uint256,address,uint256,string)",
-    args: () => ["1", env.SUPPLIER, "100000000000000", "ipfs://chart-pack-receipt"]
+    args: () => [jobId, env.SUPPLIER, "100000000000000", "ipfs://chart-pack-receipt"]
   },
   deliver: {
     label: "Submit delivery",
     type: "cast",
-    requestId: "jobescrow-delivery-001",
+    requestId: requestIdFor("delivery"),
     required: ["JOB_ESCROW", "SEPOLIA_RPC_URL", "CREATOR_B_PRIVATE_KEY"],
     description: "Selected creator records final delivery",
     signature: "submitDelivery(uint256,string,bytes32)",
-    args: async () => ["1", "ipfs://creator-agent-b-delivery", await castKeccak("delivery-b")],
+    args: async () => [jobId, "ipfs://creator-agent-b-delivery", await castKeccak(`delivery-b-${runId}`)],
     privateKeyEnv: "CREATOR_B_PRIVATE_KEY"
   },
   settle: {
     label: "Settle payout",
     type: "caw",
-    requestId: "jobescrow-pay-001",
+    requestId: requestIdFor("pay"),
     required: ["JOB_ESCROW", "SRC", "PACT_ID"],
     description: "Accept delivery and settle payouts",
     method: "acceptAndPay(uint256)",
-    args: () => ["1"]
+    args: () => [jobId]
   }
 };
 
@@ -178,6 +180,40 @@ function saveState() {
   fs.writeFileSync(stateFile, `${JSON.stringify(state, null, 2)}\n`);
 }
 
+function normalizeRunId(value) {
+  return String(value || "001")
+    .trim()
+    .replace(/[^A-Za-z0-9_-]/g, "-")
+    .slice(0, 40) || "001";
+}
+
+function normalizeJobId(value) {
+  const normalized = String(value || "1").trim();
+  return /^\d+$/.test(normalized) ? normalized : "1";
+}
+
+function requestIdFor(slug) {
+  return runId === "001" ? `jobescrow-${slug}-001` : `jobescrow-${runId}-${slug}`;
+}
+
+function readRunSteps() {
+  return state.runs?.[runId] || (runId === "001" ? state.steps || {} : {});
+}
+
+function writeStepState(stepKey, result) {
+  state.runs = state.runs || {};
+  state.runs[runId] = {
+    ...(state.runs[runId] || (runId === "001" ? state.steps || {} : {})),
+    [stepKey]: result
+  };
+
+  if (runId === "001") {
+    state.steps = state.runs[runId];
+  }
+
+  saveState();
+}
+
 function getConfig() {
   const stepReadiness = Object.fromEntries(
     Object.entries(STEPS).map(([key, step]) => [
@@ -197,6 +233,8 @@ function getConfig() {
     chainId: "SETH",
     explorerBaseUrl: "https://sepolia.etherscan.io/tx/",
     env: {
+      ACE_JOB_ID: jobId,
+      ACE_RUN_ID: runId,
       JOB_ESCROW: publicValue("JOB_ESCROW"),
       SRC: publicValue("SRC"),
       PLATFORM: publicValue("PLATFORM"),
@@ -221,9 +259,10 @@ function publicValue(key) {
 }
 
 function currentStepResults() {
+  const runSteps = readRunSteps();
   return Object.fromEntries(
     Object.keys(STEPS).map((key) => {
-      const saved = state.steps[key] || {};
+      const saved = runSteps[key] || {};
       const hashFromEnv = env[STEP_HASH_ENV[key]];
       return [
         key,
@@ -265,8 +304,7 @@ async function runStep(stepKey) {
 
   try {
     const result = step.type === "caw" ? await runCawStep(stepKey, step) : await runCastStep(stepKey, step);
-    state.steps[stepKey] = result;
-    saveState();
+    writeStepState(stepKey, result);
     return { ok: true, stepKey, result, config: getConfig() };
   } finally {
     activeRun = null;
@@ -280,7 +318,7 @@ async function refreshStep(stepKey) {
   }
 
   if (step.type !== "caw") {
-    return { ok: true, stepKey, result: state.steps[stepKey] || {}, config: getConfig() };
+    return { ok: true, stepKey, result: readRunSteps()[stepKey] || {}, config: getConfig() };
   }
 
   const missing = missingEnv(["PACT_ID"]);
@@ -289,17 +327,17 @@ async function refreshStep(stepKey) {
   }
 
   const refreshed = await pollCawRequest(step.requestId, 1, 0);
-  state.steps[stepKey] = {
-    ...(state.steps[stepKey] || {}),
+  const nextResult = {
+    ...(readRunSteps()[stepKey] || {}),
     ...refreshed,
     label: step.label,
     type: step.type,
     requestId: step.requestId,
     updatedAt: new Date().toISOString()
   };
-  saveState();
+  writeStepState(stepKey, nextResult);
 
-  return { ok: true, stepKey, result: state.steps[stepKey], config: getConfig() };
+  return { ok: true, stepKey, result: nextResult, config: getConfig() };
 }
 
 async function runCawStep(stepKey, step) {
@@ -401,12 +439,15 @@ async function pollCawRequest(requestId, attempts, intervalMs) {
     last = {
       status: extractStatus(parsed),
       subStatus: extractSubStatus(parsed),
-      txHash: extractTxHash(parsed),
+      txHash: extractTxHash(parsed) || findHash(result.stdout) || findHash(result.stderr),
       message: result.code === 0 ? "CAW transaction status refreshed." : redact(result.stderr || result.stdout),
       rawSummary: summarizeJson(parsed)
     };
 
-    if (last.txHash && isTerminalStatus(last.status)) {
+    if (last.txHash) {
+      last.message = isTerminalStatus(last.status)
+        ? "CAW transaction confirmed."
+        : "Transaction hash captured. Final confirmation may still be updating.";
       return last;
     }
 

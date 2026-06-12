@@ -191,14 +191,18 @@
             <div class="commerce-orbit orbit-settle">Settle</div>
           </div>
           <div class="carousel-controls" aria-label="Carousel controls">
-            <button class="mini-button" type="button" data-carousel-prev>Previous</button>
+            <button class="carousel-arrow" type="button" data-carousel-prev aria-label="Previous moment">
+              <span aria-hidden="true">&larr;</span>
+            </button>
             <div class="carousel-dots" aria-label="Carousel slides">
               <button class="carousel-dot is-active" type="button" data-carousel-dot="0" aria-label="Show moment 1"></button>
               <button class="carousel-dot" type="button" data-carousel-dot="1" aria-label="Show moment 2"></button>
               <button class="carousel-dot" type="button" data-carousel-dot="2" aria-label="Show moment 3"></button>
               <button class="carousel-dot" type="button" data-carousel-dot="3" aria-label="Show moment 4"></button>
             </div>
-            <button class="mini-button" type="button" data-carousel-next>Next</button>
+            <button class="carousel-arrow" type="button" data-carousel-next aria-label="Next moment">
+              <span aria-hidden="true">&rarr;</span>
+            </button>
           </div>
         </div>
       </section>
@@ -362,158 +366,171 @@
               <h2 id="campaignTitle">Protocol explainer campaign</h2>
             </div>
             <div class="topbar-actions">
-              <button class="ghost-button" id="resetButton" type="button">Reset</button>
-              <button class="ghost-button" id="advanceButton" type="button">Simulate next state</button>
+              <button class="ghost-button" id="resetButton" type="button">Start over</button>
+              <button class="ghost-button" id="advanceButton" type="button">Preview next state</button>
             </div>
           </header>
 
-          <section class="live-runner-panel" aria-label="Live Agent Runner">
-            <div class="runner-copy">
-              <p class="eyebrow">Live Agent Runner</p>
-              <h3>Click to execute the current step on Sepolia.</h3>
-              <p id="runnerStatusText">
-                Start the local runner to turn this workbench from a visual prototype into a real CAW execution console.
-              </p>
+          <section class="chain-steps-panel" aria-label="On-chain execution steps">
+            <div class="section-heading">
+              <span>6 execution steps</span>
+              <strong id="chainStepSummary">0 confirmed</strong>
             </div>
-            <div class="runner-control">
-              <span class="runner-badge is-offline" id="runnerStatusBadge">Runner offline</span>
-              <div class="runner-buttons">
-                <button class="primary-button" id="executeLiveButton" type="button">Execute live step</button>
-                <button class="mini-button" id="refreshRunnerButton" type="button">Sync</button>
-              </div>
-            </div>
-            <pre class="runner-log" id="runnerLog">Waiting for local runner at /api/runner/config</pre>
+            <div class="chain-step-list" id="chainStepList"></div>
           </section>
 
-          <section class="role-switcher" aria-label="Role view switcher">
-            <div>
-              <p class="eyebrow">Role views</p>
-              <h3>Switch the interface by participant</h3>
+          <section class="step-focus-panel" id="stepFocusPanel" aria-live="polite">
+            <div class="step-focus-copy">
+              <p class="eyebrow" id="stepFocusEyebrow">Step 01</p>
+              <h3 id="stepFocusTitle">Fund campaign</h3>
+              <p id="stepFocusBody">The Sponsor Agent funds one campaign through CAW.</p>
             </div>
-            <div class="role-tabs" role="tablist" aria-label="Workbench role views">
-              <button class="role-tab is-active" type="button" data-role-view="dao" role="tab" aria-selected="true">
-                DAO / Project
-              </button>
-              <button class="role-tab" type="button" data-role-view="creator" role="tab" aria-selected="false">
-                Creator Agent
-              </button>
-              <button class="role-tab" type="button" data-role-view="supplier" role="tab" aria-selected="false">
-                Supplier
-              </button>
-              <button class="role-tab" type="button" data-role-view="audit" role="tab" aria-selected="false">
-                Judge / Audit
-              </button>
-            </div>
-          </section>
-
-          <section class="role-view-card" id="roleViewPanel" aria-live="polite"></section>
-
-          <section class="presenter-panel" aria-label="Presenter mode summary">
-            <div class="presenter-copy">
-              <p class="eyebrow">Presenter mode</p>
-              <h3 id="presenterHeadline">CAW turns this agent from recommender into bounded spender.</h3>
-              <p id="presenterSubcopy">
-                The judge should see one live loop: task trigger, CAW permission boundary, money action, and proof.
-              </p>
-            </div>
-            <div class="presenter-proof-grid" id="presenterProofGrid"></div>
-          </section>
-
-          <section class="status-strip" aria-label="Campaign balances">
-            <div class="status-cell">
-              <small>Job status</small>
-              <strong id="jobStatus">Draft</strong>
-            </div>
-            <div class="status-cell">
-              <small>Escrow</small>
-              <strong id="escrowBalance">0 SETH</strong>
-            </div>
-            <div class="status-cell">
-              <small>Creator payout</small>
-              <strong id="creatorPayout">0 SETH</strong>
-            </div>
-            <div class="status-cell">
-              <small>Resource spend</small>
-              <strong id="resourceSpend">0 SETH</strong>
-            </div>
+            <div class="step-focus-grid" id="stepFocusGrid"></div>
           </section>
 
           <section class="timeline" aria-label="Workflow timeline" id="timeline"></section>
 
-          <section class="grid-two">
-            <div class="panel">
-              <div class="panel-heading">
-                <div>
-                  <p class="eyebrow">Proposal market</p>
-                  <h3>Creator / Analyst Agents</h3>
-                </div>
-                <span class="counter" id="proposalCounter">0 proposals</span>
-              </div>
-              <div class="proposal-grid" id="proposalGrid"></div>
-            </div>
+          <details class="advanced-workbench">
+            <summary>
+              <span>Advanced workbench views</span>
+              <small>Open for role-specific panels and full state details</small>
+            </summary>
 
-            <div class="panel">
-              <div class="panel-heading">
-                <div>
-                  <p class="eyebrow">Procurement</p>
-                  <h3>Resource Receipt</h3>
-                </div>
-                <span class="counter" id="supplierState">Waiting</span>
-              </div>
-              <div class="receipt-board">
-                <div class="receipt-line">
-                  <span>Supplier</span>
-                  <strong>Chart Pack Supplier</strong>
-                </div>
-                <div class="receipt-line">
-                  <span>Amount</span>
-                  <strong>0.0001 SETH</strong>
-                </div>
-                <div class="receipt-line">
-                  <span>Receipt URI</span>
-                  <strong>ipfs://chart-pack-receipt</strong>
-                </div>
-              </div>
-              <div class="procurement-rail" id="procurementRail"></div>
-            </div>
-          </section>
-
-          <section class="panel delivery-panel">
-            <div class="panel-heading">
+            <section class="role-switcher" aria-label="Role view switcher">
               <div>
-                <p class="eyebrow">Verifiable delivery</p>
-                <h3>Content Package</h3>
+                <p class="eyebrow">Role views</p>
+                <h3>Switch the interface by participant</h3>
               </div>
-              <span class="counter" id="deliveryState">Not submitted</span>
-            </div>
-            <div class="delivery-layout">
-              <div class="asset-stack" id="assetStack"></div>
-              <div class="hash-block">
-                <small>Delivery URI</small>
-                <strong id="deliveryUri">Pending</strong>
-                <small>Delivery hash</small>
-                <code id="deliveryHash">Pending</code>
+              <div class="role-tabs" role="tablist" aria-label="Workbench role views">
+                <button class="role-tab is-active" type="button" data-role-view="dao" role="tab" aria-selected="true">
+                  DAO / Project
+                </button>
+                <button class="role-tab" type="button" data-role-view="creator" role="tab" aria-selected="false">
+                  Creator Agent
+                </button>
+                <button class="role-tab" type="button" data-role-view="supplier" role="tab" aria-selected="false">
+                  Supplier
+                </button>
+                <button class="role-tab" type="button" data-role-view="audit" role="tab" aria-selected="false">
+                  Judge / Audit
+                </button>
               </div>
-            </div>
-          </section>
+            </section>
+
+            <section class="role-view-card" id="roleViewPanel" aria-live="polite"></section>
+
+            <section class="presenter-panel" aria-label="Presenter mode summary">
+              <div class="presenter-copy">
+                <p class="eyebrow">Presenter mode</p>
+                <h3 id="presenterHeadline">CAW turns this agent from recommender into bounded spender.</h3>
+                <p id="presenterSubcopy">
+                  The judge should see one live loop: task trigger, CAW permission boundary, money action, and proof.
+                </p>
+              </div>
+              <div class="presenter-proof-grid" id="presenterProofGrid"></div>
+            </section>
+
+            <section class="status-strip" aria-label="Campaign balances">
+              <div class="status-cell">
+                <small>Job status</small>
+                <strong id="jobStatus">Draft</strong>
+              </div>
+              <div class="status-cell">
+                <small>Escrow</small>
+                <strong id="escrowBalance">0 SETH</strong>
+              </div>
+              <div class="status-cell">
+                <small>Creator payout</small>
+                <strong id="creatorPayout">0 SETH</strong>
+              </div>
+              <div class="status-cell">
+                <small>Resource spend</small>
+                <strong id="resourceSpend">0 SETH</strong>
+              </div>
+            </section>
+
+            <section class="grid-two">
+              <div class="panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Proposal market</p>
+                    <h3>Creator / Analyst Agents</h3>
+                  </div>
+                  <span class="counter" id="proposalCounter">0 proposals</span>
+                </div>
+                <div class="proposal-grid" id="proposalGrid"></div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Procurement</p>
+                    <h3>Resource Receipt</h3>
+                  </div>
+                  <span class="counter" id="supplierState">Waiting</span>
+                </div>
+                <div class="receipt-board">
+                  <div class="receipt-line">
+                    <span>Supplier</span>
+                    <strong>Chart Pack Supplier</strong>
+                  </div>
+                  <div class="receipt-line">
+                    <span>Amount</span>
+                    <strong>0.0001 SETH</strong>
+                  </div>
+                  <div class="receipt-line">
+                    <span>Receipt URI</span>
+                    <strong>ipfs://chart-pack-receipt</strong>
+                  </div>
+                </div>
+                <div class="procurement-rail" id="procurementRail"></div>
+              </div>
+            </section>
+
+            <section class="panel delivery-panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Verifiable delivery</p>
+                  <h3>Content Package</h3>
+                </div>
+                <span class="counter" id="deliveryState">Not submitted</span>
+              </div>
+              <div class="delivery-layout">
+                <div class="asset-stack" id="assetStack"></div>
+                <div class="hash-block">
+                  <small>Delivery URI</small>
+                  <strong id="deliveryUri">Pending</strong>
+                  <small>Delivery hash</small>
+                  <code id="deliveryHash">Pending</code>
+                </div>
+              </div>
+            </section>
+          </details>
         </main>
 
         <aside class="ledger" aria-label="Command and transaction ledger">
-          <section class="ledger-section receipt-section">
+          <section class="ledger-section receipt-section proof-summary-section">
             <div class="section-heading">
-              <span>CAW Receipts</span>
+              <span>Latest On-chain Proof</span>
               <strong id="receiptSummary">0 confirmed</strong>
             </div>
-            <div class="receipt-list" id="receiptList"></div>
+            <div class="latest-proof-panel" id="latestProofPanel"></div>
+            <details class="receipt-details">
+              <summary>
+                <span>All transaction receipts</span>
+                <small>Open audit trail</small>
+              </summary>
+              <div class="receipt-list" id="receiptList"></div>
+            </details>
           </section>
 
           <details class="ledger-section command-section developer-proof">
             <summary>
-              <span>Developer Proof</span>
-              <small>Open for raw CLI command</small>
+              <span>Execution Payload</span>
+              <small>Open transaction command</small>
             </summary>
             <div class="section-heading">
-              <span>Current Command</span>
+              <span>Current Transaction Command</span>
               <button class="mini-button" id="copyCommand" type="button">Copy</button>
             </div>
             <pre id="commandBlock"></pre>
@@ -526,12 +543,16 @@
             <div class="split-list" id="splitList"></div>
           </section>
 
-          <section class="ledger-section">
+          <details class="ledger-section developer-proof state-ledger-details">
+            <summary>
+              <span>Workflow Activity</span>
+              <small>Open activity log</small>
+            </summary>
             <div class="section-heading">
-              <span>Prototype State Ledger</span>
+              <span>Workflow Activity</span>
             </div>
             <div class="event-list" id="eventList"></div>
-          </section>
+          </details>
         </aside>
       </div>
     </section>
