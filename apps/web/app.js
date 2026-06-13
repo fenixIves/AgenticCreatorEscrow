@@ -144,7 +144,7 @@ const productStages = [
   {
     key: "brief",
     label: "Campaign brief",
-    actor: "DAO / Project",
+    actor: "Project / DAO",
     startAt: 0,
     completeAt: 1
   },
@@ -158,7 +158,7 @@ const productStages = [
   {
     key: "review",
     label: "Review winner",
-    actor: "DAO + CAW Sponsor",
+    actor: "Project team + CAW Sponsor",
     startAt: 3,
     completeAt: 4
   },
@@ -663,8 +663,8 @@ function renderBriefStage() {
     <div class="stage-brief-layout">
       <form class="campaign-brief-form">
         <label>
-          DAO / Project
-          <input value="${campaign.brief.dao}" aria-label="DAO project" />
+          Project / DAO
+          <input value="${campaign.brief.dao}" aria-label="Project or DAO" />
         </label>
         <label>
           Task type
@@ -933,7 +933,7 @@ function getStageCopy(stage, state) {
   const copies = {
     brief: [
       "Fund campaign",
-      "Define the DAO content brief and let the CAW Sponsor Agent escrow the campaign budget into JobEscrow."
+      "Define the project content brief and let the CAW Sponsor Agent escrow the campaign budget into JobEscrow."
     ],
     competition: [
       "Agent competition",
@@ -941,7 +941,7 @@ function getStageCopy(stage, state) {
     ],
     review: [
       "Select winner",
-      "The DAO reviews draft quality, payout asks, and risk notes, then the CAW Sponsor Agent records the selected creator on-chain."
+      "The project team reviews draft quality, payout asks, and risk notes, then the CAW Sponsor Agent records the selected creator on-chain."
     ],
     procurement: [
       "Buy resource",
@@ -998,16 +998,16 @@ function getRoleCopy(role, state) {
 
   const roleCopies = {
     dao: {
-      badge: "DAO / Project Console",
+      badge: "Project / DAO Console",
       title: "The project gives an agent a bounded campaign budget.",
       body:
-        "This is the buyer-side interface. The DAO operator sees whether the CAW Sponsor Agent is allowed to fund, assign, procure, and settle only inside this campaign scope.",
+        "This is the buyer-side interface. The project operator sees whether the CAW Sponsor Agent is allowed to fund, assign, procure, and settle only inside this campaign scope.",
       actions: [
         ["Current stage", daoStage],
         ["Next money action", getCurrentStep().actor === "CAW Sponsor" ? getCurrentStep().label : "Wait for agent evidence"],
         ["Budget guardrail", `${formatEth(campaign.budget)} escrow cap`]
       ],
-      evidenceTitle: "DAO checks before approval",
+      evidenceTitle: "Project checks before approval",
       evidence: [
         ["Pact status", completed > 0 ? "Active" : "Ready"],
         ["Escrow balance", formatEth(state.escrow)],
