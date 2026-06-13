@@ -425,6 +425,76 @@ button:focus-visible {
   margin-top: 28px;
 }
 
+.positioning-slide {
+  align-items: end;
+  gap: clamp(22px, 5vw, 72px);
+  justify-content: space-between;
+}
+
+.positioning-slide .hero-copy {
+  max-width: 1120px;
+}
+
+.positioning-brief {
+  animation: heroReveal 900ms cubic-bezier(0.18, 0.82, 0.22, 1) 160ms both;
+  display: grid;
+  gap: 14px;
+  max-width: 430px;
+  min-width: min(390px, 34vw);
+  position: relative;
+  z-index: 3;
+}
+
+.positioning-brief article {
+  backdrop-filter: blur(18px) saturate(1.18);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(185, 242, 104, 0.12), transparent 34%),
+    linear-gradient(145deg, rgba(8, 13, 12, 0.72), rgba(21, 45, 39, 0.54));
+  border: 1px solid rgba(255, 250, 240, 0.14);
+  border-radius: 22px;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.22);
+  color: #fffaf0;
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.positioning-brief article:nth-child(2) {
+  background:
+    radial-gradient(circle at 82% 16%, rgba(185, 242, 104, 0.28), transparent 32%),
+    linear-gradient(145deg, rgba(255, 250, 240, 0.86), rgba(232, 243, 205, 0.74));
+  color: var(--ink);
+}
+
+.positioning-brief span {
+  color: var(--acid);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.positioning-brief article:nth-child(2) span {
+  color: var(--teal);
+}
+
+.positioning-brief strong {
+  font-family: "Bodoni 72", "Didot", "Georgia", serif;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+}
+
+.positioning-brief p {
+  color: rgba(255, 250, 240, 0.76);
+  font-size: 14px;
+  line-height: 1.48;
+}
+
+.positioning-brief article:nth-child(2) p {
+  color: var(--muted);
+}
+
 .jumbo-button {
   border-radius: 999px;
   min-height: 54px;
@@ -461,6 +531,9 @@ button:focus-visible {
   }
 }
 
+.build-section,
+.caw-control-section,
+.contract-section,
 .pitch-sequence-section,
 .story-section,
 .loop-section,
@@ -485,6 +558,207 @@ button:focus-visible {
   letter-spacing: -0.015em;
   line-height: 0.95;
   word-spacing: 0.03em;
+}
+
+.build-section {
+  background:
+    radial-gradient(circle at 84% 14%, rgba(185, 242, 104, 0.2), transparent 26%),
+    radial-gradient(circle at 8% 80%, rgba(65, 213, 127, 0.13), transparent 26%),
+    linear-gradient(135deg, #fffaf0 0%, #f4f7e8 54%, #edf6dc 100%);
+  position: relative;
+}
+
+.build-section::before,
+.contract-section::before {
+  animation: signalDrift 24s linear infinite;
+  background-image:
+    linear-gradient(90deg, rgba(17, 24, 22, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(17, 24, 22, 0.035) 1px, transparent 1px);
+  background-size: 38px 38px;
+  content: "";
+  inset: 0;
+  opacity: 0.58;
+  pointer-events: none;
+  position: absolute;
+}
+
+.build-section > *,
+.contract-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.build-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.product-module-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.product-module-grid article {
+  background:
+    linear-gradient(145deg, rgba(255, 253, 245, 0.86), rgba(255, 255, 255, 0.62)),
+    radial-gradient(circle at 90% 12%, rgba(185, 242, 104, 0.18), transparent 32%);
+  border: 1px solid rgba(8, 13, 12, 0.1);
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(24, 33, 31, 0.08);
+  display: grid;
+  gap: 12px;
+  min-height: 170px;
+  padding: 22px;
+}
+
+.product-module-grid small {
+  color: var(--teal);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.product-module-grid strong {
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.caw-control-section {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(65, 213, 127, 0.16), transparent 28%),
+    radial-gradient(circle at 88% 80%, rgba(8, 13, 12, 0.08), transparent 30%),
+    linear-gradient(135deg, #fffaf0, #edf6dc);
+}
+
+.caw-control-layout {
+  display: grid;
+  gap: 26px;
+}
+
+.caw-advantage-panel {
+  background:
+    linear-gradient(135deg, rgba(255, 253, 245, 0.86), rgba(255, 255, 255, 0.62)),
+    radial-gradient(circle at 94% 8%, rgba(185, 242, 104, 0.18), transparent 28%);
+  border: 1px solid rgba(8, 13, 12, 0.1);
+  border-radius: 26px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+  padding: clamp(22px, 4vw, 38px);
+}
+
+.caw-advantage-panel .advantage-copy {
+  position: static;
+}
+
+.contract-section {
+  background:
+    radial-gradient(circle at 78% 16%, rgba(185, 242, 104, 0.2), transparent 28%),
+    radial-gradient(circle at 8% 74%, rgba(65, 213, 127, 0.15), transparent 28%),
+    linear-gradient(135deg, #fffaf0 0%, #f4f7e8 58%, #edf6dc 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+.contract-layout {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
+}
+
+.contract-hero-card {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(185, 242, 104, 0.26), transparent 32%),
+    linear-gradient(135deg, var(--charcoal), #14352f);
+  border: 1px solid rgba(255, 253, 245, 0.12);
+  border-radius: 28px;
+  box-shadow: var(--hard-shadow);
+  color: #f8fff7;
+  display: grid;
+  gap: 18px;
+  min-height: 500px;
+  padding: clamp(26px, 4vw, 42px);
+}
+
+.contract-hero-card small {
+  color: var(--acid);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contract-hero-card h3 {
+  font-family: "Bodoni 72", "Didot", "Georgia", serif;
+  font-size: clamp(38px, 4.4vw, 72px);
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+.contract-hero-card p {
+  color: #dbe6e1;
+  font-size: 17px;
+  line-height: 1.58;
+}
+
+.contract-proof-strip {
+  align-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.contract-proof-strip span {
+  background: rgba(255, 253, 245, 0.1);
+  border: 1px solid rgba(255, 253, 245, 0.14);
+  border-radius: 999px;
+  color: var(--acid);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  padding: 9px 12px;
+  text-transform: uppercase;
+}
+
+.contract-record-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.contract-record-grid article {
+  background:
+    linear-gradient(145deg, rgba(255, 253, 245, 0.9), rgba(255, 255, 255, 0.66)),
+    radial-gradient(circle at 92% 14%, rgba(185, 242, 104, 0.16), transparent 32%);
+  border: 1px solid rgba(8, 13, 12, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 18px 54px rgba(24, 33, 31, 0.09);
+  display: grid;
+  gap: 10px;
+  min-height: 150px;
+  padding: 22px;
+}
+
+.contract-record-grid span {
+  color: var(--coral);
+  font-family: "Bodoni 72", "Didot", "Georgia", serif;
+  font-size: 42px;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+}
+
+.contract-record-grid strong {
+  font-size: 19px;
+}
+
+.contract-record-grid p {
+  color: var(--muted);
+  line-height: 1.48;
+}
+
+.loop-section .carousel-shell {
+  margin-top: 28px;
 }
 
 .pitch-sequence-section {
@@ -3199,7 +3473,22 @@ pre {
     max-width: 720px;
   }
 
+  .positioning-slide {
+    align-items: start;
+    flex-direction: column;
+    justify-content: end;
+  }
+
+  .positioning-brief {
+    max-width: 100%;
+    min-width: 0;
+    width: min(720px, 100%);
+  }
+
   .pitch-path,
+  .product-module-grid,
+  .caw-advantage-panel,
+  .contract-layout,
   .story-grid,
   .why-caw-grid,
   .advantage-section,
@@ -3213,6 +3502,10 @@ pre {
   .settlement-stage-layout,
   .review-layout {
     grid-template-columns: 1fr;
+  }
+
+  .contract-record-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .pitch-path::before {
@@ -3296,6 +3589,9 @@ pre {
     width: 100%;
   }
 
+  .build-section,
+  .caw-control-section,
+  .contract-section,
   .pitch-sequence-section,
   .story-section,
   .why-caw-section,
@@ -3350,8 +3646,13 @@ pre {
   .campaign-brief-form,
   .review-scoreboard,
   .presenter-proof-grid,
+  .contract-record-grid,
   .step-focus-grid {
     grid-template-columns: 1fr;
+  }
+
+  .contract-hero-card {
+    min-height: auto;
   }
 
   .stage-callout {

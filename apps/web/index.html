@@ -22,7 +22,7 @@
     </nav>
 
     <main class="home-view" id="homeView">
-      <section class="hero-section" aria-labelledby="heroTitle">
+      <section class="hero-section overview-slide positioning-slide" aria-labelledby="heroTitle">
         <canvas class="fluid-shader-canvas" id="fluidShaderCanvas" aria-hidden="true"></canvas>
         <div class="fluid-shader-fallback" aria-hidden="true"></div>
         <div class="hero-grain" aria-hidden="true"></div>
@@ -36,16 +36,16 @@
           </p>
           <div class="hero-actions">
             <button class="primary-button jumbo-button" type="button" data-view="workbench">Enter workbench</button>
-            <button class="ghost-button jumbo-button" type="button" data-view="home-details">View pitch flow</button>
+            <button class="ghost-button jumbo-button" type="button" data-view="home-details">Start pitch flow</button>
           </div>
           <div class="hero-signal-board" aria-label="Live product signals">
             <div>
-              <span>Scope</span>
-              <strong>JobEscrow only</strong>
+              <span>Category</span>
+              <strong>Agentic Commerce</strong>
             </div>
             <div>
-              <span>Spend cap</span>
-              <strong>0.001 SETH capped</strong>
+              <span>Target users</span>
+              <strong>DAO growth teams</strong>
             </div>
             <div>
               <span>Proof trail</span>
@@ -54,94 +54,178 @@
           </div>
           <div class="proof-strip" aria-label="Demo proof points">
             <span>CAW sponsor treasury</span>
+            <span>JobEscrow contract</span>
             <span>Pact-scoped spending</span>
             <span>On-chain settlement</span>
           </div>
         </div>
+
+        <div class="positioning-brief reveal-on-scroll" aria-label="Product positioning summary">
+          <article>
+            <span>The old way</span>
+            <strong>Manual campaign ops</strong>
+            <p>Off-chain approvals, spreadsheet bounties, screenshots as proof, payout delays, and no safe way for an AI worker to buy resources.</p>
+          </article>
+          <article>
+            <span>The ACE way</span>
+            <strong>Agentic Creator Escrow</strong>
+            <p>CAW-gated sponsor wallet, funded work agreement, agent proposal market, supplier payment, delivery hash, and automatic settlement.</p>
+          </article>
+        </div>
       </section>
 
-      <section class="pitch-sequence-section reveal-on-scroll" id="homeDetails" aria-labelledby="pitchSequenceTitle">
+      <section class="build-section overview-slide reveal-on-scroll" id="homeDetails" aria-labelledby="buildTitle">
         <div class="section-kicker">
-          <p class="eyebrow">Two-minute product pitch</p>
-          <h2 id="pitchSequenceTitle">From product positioning to executable money flow.</h2>
+          <p class="eyebrow">02 / What we built</p>
+          <h2 id="buildTitle">A workbench where agents compete, deliver, and get paid.</h2>
         </div>
-        <div class="pitch-path" aria-label="ACE product explanation sequence">
-          <article class="pitch-card pitch-card-dark reveal-on-scroll">
-            <span>01 / Product positioning</span>
-            <h3>Agent-native escrow for DAO content operations.</h3>
+        <div class="build-layout">
+          <div class="story-grid">
+            <article class="story-panel accent-coral reveal-on-scroll">
+              <span>01</span>
+              <h3>The pain</h3>
+              <p>
+                Content campaigns usually rely on manual briefs, Discord coordination, off-chain
+                approvals, and delayed payouts. Agents can help, but without a controlled wallet they
+                cannot safely spend or settle money.
+              </p>
+            </article>
+            <article class="story-panel accent-teal reveal-on-scroll">
+              <span>02</span>
+              <h3>The product</h3>
+              <p>
+                A project gives a Sponsor Agent a bounded CAW pact. The agent posts a funded job,
+                evaluates creator proposals, pays approved suppliers, and settles the winning delivery.
+              </p>
+            </article>
+            <article class="story-panel accent-amber reveal-on-scroll">
+              <span>03</span>
+              <h3>The outcome</h3>
+              <p>
+                Every important economic action becomes inspectable: who bid, what was purchased,
+                what was delivered, and how the escrow was split.
+              </p>
+            </article>
+          </div>
+
+          <div class="product-module-grid" aria-label="Workbench product modules">
+            <article>
+              <small>Campaign brief</small>
+              <strong>DAO defines the paid job, deliverables, payout ceiling, and proof requirements.</strong>
+            </article>
+            <article>
+              <small>Agent proposal market</small>
+              <strong>Creator and Analyst Agents submit proposal URI, hash, requested payout, and risk notes.</strong>
+            </article>
+            <article>
+              <small>Review + delivery</small>
+              <strong>The DAO selects the best agent output, downloads the package, and verifies the delivery hash.</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="caw-control-section overview-slide reveal-on-scroll" aria-labelledby="cawControlTitle">
+        <div class="section-kicker">
+          <p class="eyebrow">03 / CAW control layer</p>
+          <h2 id="cawControlTitle">The painful part is not creating content. It is letting an agent safely move money.</h2>
+        </div>
+        <div class="caw-control-layout">
+          <div class="why-caw-grid">
+            <article class="pain-card">
+              <small>Without CAW</small>
+              <h3>AI can recommend, but cannot safely pay.</h3>
+              <p>Most agent demos stop at workflow suggestions because a normal hot wallet gives the agent too much authority.</p>
+            </article>
+            <article class="pain-card">
+              <small>Manual ops</small>
+              <h3>Multisig approvals break small, fast procurement.</h3>
+              <p>Research packs, design assets, and creator payouts are too operationally heavy when every step needs a human chase.</p>
+            </article>
+            <article class="caw-card">
+              <small>With CAW</small>
+              <h3>Pact-scoped money movement.</h3>
+              <p>The Sponsor Agent can only execute approved campaign actions: fund escrow, pay supplier, settle delivery, and nothing outside the pact.</p>
+            </article>
+          </div>
+
+          <div class="caw-advantage-panel">
+            <div class="advantage-copy">
+              <p class="eyebrow">Why this is not just a wallet demo</p>
+              <h2>CAW is the control plane for agent spending.</h2>
+              <p>
+                The core product only works if the agent can actually move money with bounded authority.
+                CAW makes the Sponsor Agent useful without making it dangerous: the pact limits what can
+                be called, which wallet can pay, and how the transaction history is audited.
+              </p>
+            </div>
+            <div class="advantage-list">
+              <div class="advantage-row">
+                <strong>Permissioned execution</strong>
+                <span>Only approved escrow and procurement actions are available to the agent.</span>
+              </div>
+              <div class="advantage-row">
+                <strong>Budget isolation</strong>
+                <span>Campaign funds sit in a bounded job instead of an unlimited project wallet.</span>
+              </div>
+              <div class="advantage-row">
+                <strong>Agent resource procurement</strong>
+                <span>The agent can buy inputs needed to complete the campaign, not just post a task.</span>
+              </div>
+              <div class="advantage-row">
+                <strong>Verifiable settlement</strong>
+                <span>Delivery hash, resource receipt, and payout split are visible in one flow.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contract-section overview-slide reveal-on-scroll" aria-labelledby="contractTitle">
+        <div class="section-kicker">
+          <p class="eyebrow">04 / On-chain contract</p>
+          <h2 id="contractTitle">JobEscrow records the funded agreement and settlement state.</h2>
+        </div>
+        <div class="contract-layout">
+          <article class="contract-hero-card">
+            <small>Sepolia smart contract</small>
+            <h3>One campaign, one escrowed economic state machine.</h3>
             <p>
-              ACE is built for DAO and Web3 growth teams that need paid creator work to move faster,
-              while keeping budget execution auditable and bounded.
+              JobEscrow stores the work agreement that CAW is allowed to operate: funded budget,
+              proposal evidence, selected creator, supplier spend, delivery hash, payout split,
+              platform fee, and sponsor refund.
             </p>
-          </article>
-          <article class="pitch-card reveal-on-scroll">
-            <span>02 / What we built</span>
-            <h3>A workbench where agents compete, deliver, and get paid.</h3>
-            <p>
-              The demo includes a campaign brief, creator-agent proposal market, winner review,
-              resource procurement, delivery package, and final settlement view.
-            </p>
-          </article>
-          <article class="pitch-card pitch-card-acid reveal-on-scroll">
-            <span>03 / CAW control layer</span>
-            <h3>The Sponsor Agent can spend, but only inside a pact.</h3>
-            <p>
-              Cobo Agentic Wallet is the execution boundary: the agent uses a CAW Sponsor wallet,
-              request IDs, approval flow, and pact-scoped permissions for money-moving actions.
-            </p>
-          </article>
-          <article class="pitch-card reveal-on-scroll">
-            <span>04 / On-chain contract</span>
-            <h3>JobEscrow records the funded agreement and settlement state.</h3>
-            <p>
-              The Sepolia contract stores the job budget, proposals, selected creator, supplier
-              payment, delivery hash, creator payout, platform fee, and sponsor refund.
-            </p>
-          </article>
-          <article class="pitch-card pitch-flow-card reveal-on-scroll">
-            <span>05 / Core operation flow</span>
-            <h3>Six steps turn a campaign into Agentic Commerce.</h3>
-            <div class="pitch-flow">
-              <strong>Fund</strong>
-              <strong>Compete</strong>
-              <strong>Select</strong>
-              <strong>Procure</strong>
-              <strong>Verify</strong>
-              <strong>Settle</strong>
+            <div class="contract-proof-strip">
+              <span>Scope: JobEscrow only</span>
+              <span>Asset: SETH</span>
+              <span>Spend cap: 0.001 SETH</span>
             </div>
           </article>
+          <div class="contract-record-grid" aria-label="JobEscrow records">
+            <article><span>01</span><strong>Campaign budget</strong><p>Funds enter the job before agent work begins.</p></article>
+            <article><span>02</span><strong>Proposal hashes</strong><p>Agent bids become auditable records, not chat messages.</p></article>
+            <article><span>03</span><strong>Winner assignment</strong><p>The selected creator is written into the escrow state.</p></article>
+            <article><span>04</span><strong>Supplier payment</strong><p>Resource spend is separated from creator payout reserves.</p></article>
+            <article><span>05</span><strong>Delivery hash</strong><p>The final package has a URI and content hash for verification.</p></article>
+            <article><span>06</span><strong>Payout split</strong><p>Settlement releases creator payout, platform fee, and sponsor refund.</p></article>
+          </div>
         </div>
       </section>
 
-      <section class="why-caw-section reveal-on-scroll" aria-labelledby="whyCawTitle">
+      <section class="loop-section overview-slide reveal-on-scroll" aria-labelledby="loopTitle">
         <div class="section-kicker">
-          <p class="eyebrow">Why CAW matters</p>
-          <h2 id="whyCawTitle">The painful part is not creating content. It is letting an agent safely move money.</h2>
+          <p class="eyebrow">05 / Core operation flow</p>
+          <h2 id="loopTitle">Six steps turn a content campaign into Agentic Commerce.</h2>
         </div>
-        <div class="why-caw-grid">
-          <article class="pain-card">
-            <small>Without CAW</small>
-            <h3>AI can recommend, but cannot safely pay.</h3>
-            <p>Most agent demos stop at workflow suggestions because a normal hot wallet gives the agent too much authority.</p>
-          </article>
-          <article class="pain-card">
-            <small>Manual ops</small>
-            <h3>Multisig approvals break small, fast procurement.</h3>
-            <p>Research packs, design assets, and creator payouts are too operationally heavy when every step needs a human chase.</p>
-          </article>
-          <article class="caw-card">
-            <small>With CAW</small>
-            <h3>Pact-scoped money movement.</h3>
-            <p>The Sponsor Agent can only execute approved campaign actions: fund escrow, pay supplier, settle delivery, and nothing outside the pact.</p>
-          </article>
+        <div class="loop-track">
+          <div class="loop-item"><strong>Fund</strong><span>DAO budget enters JobEscrow through the CAW Sponsor Agent.</span></div>
+          <div class="loop-item"><strong>Compete</strong><span>Creator and analyst agents submit proposals with payout asks.</span></div>
+          <div class="loop-item"><strong>Select</strong><span>The Sponsor Agent chooses the best proposal under pact permissions.</span></div>
+          <div class="loop-item"><strong>Procure</strong><span>The agent pays a supplier for research, data, visuals, or editing assets.</span></div>
+          <div class="loop-item"><strong>Verify</strong><span>The creator submits delivery URI and content hash.</span></div>
+          <div class="loop-item"><strong>Settle</strong><span>CAW executes final payout, platform fee, and sponsor refund.</span></div>
         </div>
-      </section>
 
-      <section class="showcase-section reveal-on-scroll" aria-labelledby="showcaseTitle">
-        <div class="section-kicker">
-          <p class="eyebrow">Demo narrative</p>
-          <h2 id="showcaseTitle">Four moments judges should remember.</h2>
-        </div>
         <div class="carousel-shell" id="demoCarousel">
           <div class="carousel-stage">
             <article class="carousel-card is-active" data-carousel-slide>
@@ -216,102 +300,6 @@
             <button class="carousel-arrow" type="button" data-carousel-next aria-label="Next moment">
               <span aria-hidden="true">&rarr;</span>
             </button>
-          </div>
-        </div>
-      </section>
-
-      <section class="story-section reveal-on-scroll">
-        <div class="section-kicker">
-          <p class="eyebrow">Product purpose</p>
-          <h2>From “bounty board” to agent-native commerce.</h2>
-        </div>
-        <div class="story-grid">
-          <article class="story-panel accent-coral reveal-on-scroll">
-            <span>01</span>
-            <h3>The pain</h3>
-            <p>
-              Content campaigns usually rely on manual briefs, Discord coordination, off-chain
-              approvals, and delayed payouts. Agents can help, but without a controlled wallet they
-              cannot safely spend or settle money.
-            </p>
-          </article>
-          <article class="story-panel accent-teal reveal-on-scroll">
-            <span>02</span>
-            <h3>The product</h3>
-            <p>
-              A project gives a Sponsor Agent a bounded CAW pact. The agent posts a funded job,
-              evaluates creator proposals, pays approved suppliers, and settles the winning delivery.
-            </p>
-          </article>
-          <article class="story-panel accent-amber reveal-on-scroll">
-            <span>03</span>
-            <h3>The outcome</h3>
-            <p>
-              Every important economic action becomes inspectable: who bid, what was purchased,
-              what was delivered, and how the escrow was split.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="loop-section reveal-on-scroll" aria-labelledby="loopTitle">
-        <div class="section-kicker">
-          <p class="eyebrow">Core loop</p>
-          <h2 id="loopTitle">A complete agent commerce workflow in one demo.</h2>
-        </div>
-        <div class="loop-track">
-          <div class="loop-item"><strong>Fund</strong><span>DAO budget enters JobEscrow through the CAW Sponsor Agent.</span></div>
-          <div class="loop-item"><strong>Compete</strong><span>Creator and analyst agents submit proposals with payout asks.</span></div>
-          <div class="loop-item"><strong>Select</strong><span>The Sponsor Agent chooses the best proposal under pact permissions.</span></div>
-          <div class="loop-item"><strong>Procure</strong><span>The agent pays a supplier for research, data, visuals, or editing assets.</span></div>
-          <div class="loop-item"><strong>Verify</strong><span>The creator submits delivery URI and content hash.</span></div>
-          <div class="loop-item"><strong>Settle</strong><span>CAW executes final payout, platform fee, and sponsor refund.</span></div>
-        </div>
-      </section>
-
-      <section class="advantage-section reveal-on-scroll" aria-label="Product advantages">
-        <div class="advantage-copy">
-          <p class="eyebrow">Why this is not just a wallet demo</p>
-          <h2>CAW is the control plane for agent spending.</h2>
-          <p>
-            The core product only works if the agent can actually move money with bounded authority.
-            CAW makes the Sponsor Agent useful without making it dangerous: the pact limits what can
-            be called, which wallet can pay, and how the transaction history is audited.
-          </p>
-        </div>
-        <div class="advantage-list">
-          <div class="advantage-row">
-            <strong>Permissioned execution</strong>
-            <span>Only approved escrow and procurement actions are available to the agent.</span>
-          </div>
-          <div class="advantage-row">
-            <strong>Budget isolation</strong>
-            <span>Campaign funds sit in a bounded job instead of an unlimited project wallet.</span>
-          </div>
-          <div class="advantage-row">
-            <strong>Agent resource procurement</strong>
-            <span>The agent can buy inputs needed to complete the campaign, not just post a task.</span>
-          </div>
-          <div class="advantage-row">
-            <strong>Verifiable settlement</strong>
-            <span>Delivery hash, resource receipt, and payout split are visible in one flow.</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="comparison-section reveal-on-scroll" aria-labelledby="comparisonTitle">
-        <div class="section-kicker">
-          <p class="eyebrow">Demo angle</p>
-          <h2 id="comparisonTitle">Built for DAO growth teams and Web3 content ops.</h2>
-        </div>
-        <div class="comparison-grid">
-          <div class="comparison-column muted-column">
-            <h3>Manual campaign ops</h3>
-            <p>Off-chain approvals, spreadsheet bounties, screenshots as proof, payout delays, and no safe way for an AI worker to buy resources.</p>
-          </div>
-          <div class="comparison-column live-column">
-            <h3>Agentic Creator Escrow</h3>
-            <p>CAW-gated sponsor wallet, funded work agreement, agent proposal market, supplier payment, delivery hash, and automatic settlement.</p>
           </div>
         </div>
       </section>
