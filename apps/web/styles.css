@@ -461,6 +461,7 @@ button:focus-visible {
   }
 }
 
+.pitch-sequence-section,
 .story-section,
 .loop-section,
 .advantage-section,
@@ -484,6 +485,164 @@ button:focus-visible {
   letter-spacing: -0.015em;
   line-height: 0.95;
   word-spacing: 0.03em;
+}
+
+.pitch-sequence-section {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(185, 242, 104, 0.22), transparent 28%),
+    radial-gradient(circle at 86% 72%, rgba(65, 213, 127, 0.16), transparent 30%),
+    linear-gradient(135deg, #fffaf0 0%, #f3f6e7 58%, #edf6dc 100%);
+  position: relative;
+}
+
+.pitch-sequence-section::before {
+  animation: signalDrift 24s linear infinite;
+  background-image:
+    linear-gradient(90deg, rgba(17, 24, 22, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(17, 24, 22, 0.035) 1px, transparent 1px);
+  background-size: 38px 38px;
+  content: "";
+  inset: 0;
+  opacity: 0.58;
+  pointer-events: none;
+  position: absolute;
+}
+
+.pitch-sequence-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.pitch-path {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  position: relative;
+}
+
+.pitch-path::before {
+  background: linear-gradient(90deg, rgba(8, 13, 12, 0.12), rgba(12, 111, 99, 0.34), rgba(185, 242, 104, 0.38));
+  border-radius: 999px;
+  content: "";
+  height: 3px;
+  left: 4%;
+  position: absolute;
+  right: 4%;
+  top: 31px;
+}
+
+.pitch-card {
+  background:
+    linear-gradient(145deg, rgba(255, 253, 245, 0.88), rgba(255, 255, 255, 0.64)),
+    radial-gradient(circle at 88% 14%, rgba(185, 242, 104, 0.16), transparent 34%);
+  border: 1px solid rgba(8, 13, 12, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 18px 60px rgba(24, 33, 31, 0.1);
+  display: grid;
+  gap: 14px;
+  min-height: 300px;
+  padding: 24px;
+  position: relative;
+  transition: border-color 260ms ease, box-shadow 260ms ease, transform 260ms ease;
+}
+
+.pitch-card::before {
+  background: var(--acid);
+  border: 5px solid #fffaf0;
+  border-radius: 50%;
+  box-shadow: 0 12px 28px rgba(24, 33, 31, 0.18);
+  content: "";
+  height: 18px;
+  position: relative;
+  width: 18px;
+  z-index: 2;
+}
+
+.pitch-card:hover {
+  border-color: rgba(12, 111, 99, 0.28);
+  box-shadow: var(--hard-shadow);
+  transform: translateY(-6px);
+}
+
+.pitch-card span {
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pitch-card h3 {
+  font-family: "Bodoni 72", "Didot", "Georgia", serif;
+  font-size: clamp(28px, 3vw, 42px);
+  letter-spacing: -0.012em;
+  line-height: 0.96;
+}
+
+.pitch-card p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.pitch-card-dark,
+.pitch-card-acid,
+.pitch-flow-card {
+  color: #f8fff7;
+}
+
+.pitch-card-dark {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(185, 242, 104, 0.26), transparent 34%),
+    linear-gradient(135deg, var(--charcoal), #14352f);
+  border-color: rgba(255, 253, 245, 0.12);
+}
+
+.pitch-card-acid {
+  background:
+    radial-gradient(circle at 80% 16%, rgba(255, 250, 240, 0.42), transparent 28%),
+    linear-gradient(135deg, #22523a, #8ccf2f);
+  border-color: rgba(8, 13, 12, 0.14);
+}
+
+.pitch-flow-card {
+  background:
+    radial-gradient(circle at 24% 18%, rgba(185, 242, 104, 0.32), transparent 30%),
+    linear-gradient(135deg, #0d1412, #1a4c40);
+  border-color: rgba(255, 253, 245, 0.12);
+}
+
+.pitch-card-dark span,
+.pitch-flow-card span {
+  color: var(--acid);
+}
+
+.pitch-card-acid span {
+  color: #efffe4;
+}
+
+.pitch-card-dark p,
+.pitch-card-acid p,
+.pitch-flow-card p {
+  color: #dbe6e1;
+}
+
+.pitch-flow {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 4px;
+}
+
+.pitch-flow strong {
+  background: rgba(255, 253, 245, 0.1);
+  border: 1px solid rgba(255, 253, 245, 0.14);
+  border-radius: 999px;
+  color: var(--acid);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 9px 10px;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .why-caw-section {
@@ -3040,6 +3199,7 @@ pre {
     max-width: 720px;
   }
 
+  .pitch-path,
   .story-grid,
   .why-caw-grid,
   .advantage-section,
@@ -3053,6 +3213,18 @@ pre {
   .settlement-stage-layout,
   .review-layout {
     grid-template-columns: 1fr;
+  }
+
+  .pitch-path::before {
+    display: none;
+  }
+
+  .pitch-card {
+    min-height: auto;
+  }
+
+  .pitch-flow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .advantage-copy {
@@ -3124,7 +3296,10 @@ pre {
     width: 100%;
   }
 
+  .pitch-sequence-section,
   .story-section,
+  .why-caw-section,
+  .showcase-section,
   .loop-section,
   .advantage-section,
   .comparison-section {
@@ -3261,6 +3436,10 @@ pre {
 
   .slide-proof strong {
     text-align: left;
+  }
+
+  .pitch-flow {
+    grid-template-columns: 1fr;
   }
 
   .escrow-badge {

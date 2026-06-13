@@ -529,7 +529,7 @@ function getReceipts() {
     note:
       step.note ||
       (index < completed
-        ? "Preview state advanced. Run live execution to attach a transaction hash."
+        ? "Workflow state advanced. Run live execution to attach a transaction hash."
         : "Waiting for this workflow step.")
   }));
 
@@ -543,7 +543,7 @@ function getLatestProofSummary() {
   }
 
   if (completed > 0) {
-    return "Preview state advanced";
+    return "Workflow state advanced";
   }
 
   return "Awaiting real CAW hash";
@@ -606,7 +606,7 @@ function getNextCawStep(fromIndex = completed) {
   return steps.slice(fromIndex).find((step) => step.actor === "CAW Sponsor");
 }
 
-function renderStageControls(liveLabel, previewLabel = "Preview next state") {
+function renderStageControls(liveLabel) {
   const step = getCurrentStep();
   const readiness = getCurrentRunnerReadiness();
   const missing = readiness.missing || [];
@@ -630,9 +630,9 @@ function renderStageControls(liveLabel, previewLabel = "Preview next state") {
   return `
     <div class="stage-controls">
       <button class="primary-button" type="button" data-stage-action="execute-live" ${ready ? "" : "disabled"}>
-        ${runner.running ? (step.actor === "CAW Sponsor" ? "Waiting for CAW approval..." : "Submitting transaction...") : alreadyConfirmed ? "Confirmed on-chain" : liveLabel}
+        ${runner.running ? (step.actor === "CAW Sponsor" ? "Waiting for CAW approval..." : "Submitting transaction...") : alreadyConfirmed ? "On-chain confirmed" : liveLabel}
       </button>
-      <button class="ghost-button" type="button" data-stage-action="simulate-next" ${runner.running ? "disabled" : ""}>${previewLabel}</button>
+      <button class="ghost-button" type="button" data-stage-action="simulate-next" ${runner.running ? "disabled" : ""}>Next step</button>
       <button class="mini-button" type="button" data-stage-action="sync" ${runner.running ? "disabled" : ""}>
         ${runner.running ? "Refreshing..." : "Refresh proofs"}
       </button>
@@ -640,12 +640,12 @@ function renderStageControls(liveLabel, previewLabel = "Preview next state") {
     <p class="stage-control-note">
       Current action: <strong>${step.label}</strong>. ${modeNote} ${
         alreadyConfirmed
-          ? "This action is already confirmed for the current workflow."
+          ? "This step already has a transaction record. Continue to the next step instead of submitting it again."
           : missing.length > 0
           ? `Live execution is not configured yet: ${missing.join(", ")}.`
           : runner.available
             ? "Live execution is ready. CAW sponsor actions may require mobile approval."
-            : "Live execution is offline. You can continue in preview mode."
+            : "Live execution is offline. Use Next step to move through the presentation flow."
       }
     </p>
   `;
@@ -698,7 +698,7 @@ function renderBriefStage() {
         <div class="deliverable-strip">${deliverables}</div>
       </aside>
     </div>
-    ${renderStageControls("Fund campaign with CAW", "Preview funded campaign")}
+    ${renderStageControls("Fund campaign with CAW")}
   `;
 }
 
@@ -755,7 +755,7 @@ function renderCompetitionStage(state) {
       <button class="primary-button" type="button" data-stage-action="execute-proposals" ${ready ? "" : "disabled"}>
         ${runner.running ? "Submitting proposals..." : confirmedCount > 0 ? "Submit remaining proposals" : "Submit both agent proposals"}
       </button>
-      <button class="ghost-button" type="button" data-stage-action="simulate-proposals" ${runner.running ? "disabled" : ""}>Preview agent proposals</button>
+      <button class="ghost-button" type="button" data-stage-action="simulate-proposals" ${runner.running ? "disabled" : ""}>Next step</button>
       <button class="mini-button" type="button" data-stage-action="sync" ${runner.running ? "disabled" : ""}>
         ${runner.running ? "Refreshing..." : "Refresh proofs"}
       </button>
@@ -767,7 +767,7 @@ function renderCompetitionStage(state) {
           ? `Live proposal submission is not configured yet: ${uniqueMissing.join(", ")}.`
           : runner.available
             ? "Live proposal submission is ready."
-            : "Live execution is offline. You can continue in preview mode."
+            : "Live execution is offline. Use Next step to move through the presentation flow."
       }
     </p>
   `;
@@ -821,7 +821,7 @@ function renderReviewStage() {
     <div class="review-board">
       <div class="review-scoreboard">${reviewCards}</div>
     </div>
-    ${renderStageControls("Confirm Creator Agent B with CAW", "Preview selected creator")}
+    ${renderStageControls("Confirm Creator Agent B with CAW")}
   `;
 }
 
@@ -852,7 +852,7 @@ function renderProcurementStage(state) {
         <code>${result.txHash || step.tx}</code>
       </article>
     </div>
-    ${renderStageControls("Pay supplier with CAW", "Preview resource payment")}
+    ${renderStageControls("Pay supplier with CAW")}
   `;
 }
 
@@ -879,7 +879,7 @@ function renderDeliveryStage(state) {
         </div>
       </article>
     </div>
-    ${renderStageControls("Submit delivery hash", "Preview submitted delivery")}
+    ${renderStageControls("Submit delivery hash")}
   `;
 }
 
@@ -906,7 +906,7 @@ function renderSettlementStage(state) {
         </div>
       </article>
     </div>
-    ${renderStageControls(state.isSettled ? "Settlement complete" : "Accept delivery and settle with CAW", "Preview settlement")}
+    ${renderStageControls(state.isSettled ? "Settlement complete" : "Accept delivery and settle with CAW")}
   `;
 }
 
@@ -1188,7 +1188,7 @@ function renderReceipts() {
             : status === "awaiting"
               ? "awaiting hash"
             : status === "simulated"
-              ? "previewed"
+              ? "advanced"
               : "pending";
 
       return `
@@ -1400,7 +1400,7 @@ function renderEvents() {
               ? `${shortHash(step.hash)} | confirmed`
               : step.runStatus
                 ? `${step.tx} | ${step.runStatus}`
-                : `${step.tx} | preview record`
+                : `${step.tx} | guided record`
           }</code>
         </div>
       `
@@ -1425,7 +1425,6 @@ function renderCommand() {
 }
 
 function renderMetrics(state) {
-  const currentStage = getCurrentProductStage();
   el.campaignTitle.textContent = campaign.title;
   el.budgetMetric.textContent = formatEth(campaign.budget);
   el.jobStatus.textContent = state.status;
@@ -1438,7 +1437,7 @@ function renderMetrics(state) {
     ? "Waiting for live execution"
     : completed >= steps.length
       ? "Workflow complete"
-      : `Preview: ${currentStage.label}`;
+      : "Next step";
   el.resetButton.disabled = runner.running;
 }
 
